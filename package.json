@@ -1,0 +1,30 @@
+{
+  "name": "goldenboy-bot",
+  "version": "1.0.0",
+  "description": "Code Hangar's goldenboy",
+  "main": "goldenboy_keyless.js",
+  "scripts": {
+    "start": "NODE_ENV=development node goldenboy",
+    "test": "echo All Tests are passing!"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codehangar/goldenboy-bot.git"
+  },
+  "keywords": [
+    "slack",
+    "bot",
+    "goldenboy"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codehangar/goldenboy-bot/issues"
+  },
+  "homepage": "https://github.com/codehangar/goldenboy-bot#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "node-slackbot": "0.0.6",
+    "simply-trello": "0.0.9"
+  }
+}

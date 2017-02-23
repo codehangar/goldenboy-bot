@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+- 6.9.4
+install:
+- npm install
+cache:
+  directories:
+  - node_modules
+deploy:
+  skip_cleanup: true
+  provider: heroku
+  app: goldenboy-bot
+  api_key:
+    secure: SuBWHr0ds+lWSpd2xuSXXoAH5sejfWH5dh5oG3hJJSi/SCf28v/YutnIZGz0fgbEhniXQJ3vH6nwIX58hn43/qN4/OYHDVioiJhxwa5yQ3lbvh1Co6GNsHkjUZ4zUPXBqYNymfaLmB6pku1ej67FVzQIgryqJ5RzzYEZzp5j6Jryw4Y7BSbYIdFCdkLMj7Ey3DD/9VVTSLax2nKUQlGnCS4OYUY0nc6lzqMcQJe27VaAZ3S136M+KlJu5CpH6SrYaJEHECUkYY/hVL9LTFsz/J2+LKG8ab59xZ/+n1NqYetbMkpheS5faM+zr8P/SnPdFcIR+8kd9HWxHv+CO7MdRmCor8RSebttX3NJh3z9mx1s1+L6EjQBvyexPlrLBXKuG4hDnmrB9eYoeoj+CfVFmTAVjT01XV5CjHs1Wrb2WKfk6KI8pyPS38ti49iK/pIRsmAXaD+DBQmkKPsKAlLUKO4PyYbYfE1uTMLnZYHgZ3+2KGr54emuhbzujYmJMPVNCiBBU5pXrMAt2blvBWdLLGFsRzzy/CKDaLka1tpppxgmUP1vC2gsaxu2jVCRqrylIENiuLKWimIXkgTjW2u77COeR529CIOEWIjpiV8cvNyOTS59G5lzSXMcTbZnrQh3c0t3ebjXxCt0eTu7yA9a8PzZvblJs6yfJfpgEtOn4cM=
+  on:
+    repo: codehangar/goldenboy-bot
+    branch: master
