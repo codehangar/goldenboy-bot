@@ -20,6 +20,7 @@ if (process.env.NODE_ENV === 'development') {
 var https = require('https');
 var slackbot = require('node-slackbot');
 var simplyTrello = require('simply-trello');
+var express = require('express');
 
 var botKey = process.env.BOT_KEY;
 var bot = new slackbot(botKey);
@@ -541,3 +542,12 @@ bot.api('channels.list', {
 
 bot.connect();
 
+var app = express();
+
+/** Static Files */
+app.use('/', express.static(__dirname + '/web'));
+
+var port = process.env.PORT || 8000;
+var server = app.listen(port, function() {
+  console.log('listening on port: %s', port);
+});

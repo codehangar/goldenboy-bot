@@ -24,6 +24,7 @@
   "homepage": "https://github.com/codehangar/goldenboy-bot#readme",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "express": "^4.14.1",
     "node-slackbot": "0.0.6",
     "simply-trello": "0.0.9"
   }
