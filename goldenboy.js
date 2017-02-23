@@ -22,6 +22,8 @@ var slackbot = require('node-slackbot');
 var simplyTrello = require('simply-trello');
 var express = require('express');
 
+const {trelloCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands} = require('./src/commands');
+
 var botKey = process.env.BOT_KEY;
 var bot = new slackbot(botKey);
 
@@ -514,12 +516,6 @@ function getRandomInt(min, max) {
 }
 
 var robotName = "goldenboy";
-var trelloCommands = ["idea:", "blog post:", "ch todo:"];
-var noteCommands = ["save meeting notes:", "print meeting notes:", "clear meeting notes:", "good news:", "customer headline:", "employee headline:"];
-var helpCommands = ["help:", "hello:", "status:"];
-var statusCommands = ["sleep:", "speak:", "silence:", "status:"]
-var funCommands = ["kill goldenboy:", "punish:", "reward:"];
-var allCommands = trelloCommands.concat(noteCommands).concat(helpCommands).concat(funCommands).concat(statusCommands);
 
 var funPrewords = ["stabilize ", "for ", "kill ", "reward ", "praise ", "scold ", "punish ", "hey ", "hello ", "fuck you "];
 var statusPrewords = ["sleep ", "silence ", "speak ", "status "]
