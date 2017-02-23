@@ -15,3 +15,7 @@ deploy:
   on:
     repo: codehangar/goldenboy-bot
     branch: master
+notifications:
+  slack:
+    rooms:
+      secure: zDEkAEgThuNCUGPy7qR0FEqEH4wDec7XHM7zI5KDaIeZ2JzIphn8E34nZcvm4V/tEio5H+/iZON3knevh95D9HJRRZC1hGFHkW0G+eo1I8Hkc6ULKgAQR6x6ta9/dt/3xItQXW/Z/zsFYlevMaveo7ERdTBOiWI5eBP2py+d3a1xxZuC2wLuWfUkBLnkOxo9EFGxkzAaU2zTzlKbW2Dgyx1MQ0ULYxTithoOWDRkr78kbppf+jwKUO0z0CjThoQVbOO7MFYieoW1Z3cNciO+tdUHexqCDQrtU3216cdkHt3t51YO9fVKRINUPV1fwg7m+fTwSM0uNyRb+xqzAOw+QNnsxPYaPCrSGI1qDt67mW3pUwYp0avWWt7REqq6AtPzcQ8Q/U4EEma5+rYHrXvOX3CtNMcCfo+gQHu9dWJT7X8VzESxBIloPchR6yT6IxPOz8pPd2npVCtDzjKXj8QOE+7O64etKqwktL/Oby9ItZn42wEnltgsJSEmf4TZ2U8Wyhn0DPl1fdYAzSq3Qp2CtRQgsw/72u3MAbnM41LFzH19HH7dZL6g/uVHNyIz9b1qwT3/iKDXCZhXt8EroP75abZxbl//vdVMvifO7A1HLnDA/4vuLLxHwC881C/shFnlwX493w/4bH/Hv98gC0wLvcS+ACYncqxab12Abiq4dPg=
