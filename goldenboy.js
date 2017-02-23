@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const bot = require('./src/bot');
-const server = require('./src/server-web');
+const server = require('./web/server-web');
 const {trelloCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId} = require('./src/users');

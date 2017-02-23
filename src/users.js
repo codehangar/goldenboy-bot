@@ -1,24 +1,20 @@
-let users = {};
+let users = [];
 
 function updateUsers(data) {
-  users = data;
-  for (m in users.members) {
-    //console.log(users.members[m].id);
-
-  }
+  users = data.members;
 }
 
 function getUsernameFromId(id) {
-  for (var m in users.members) {
-    //console.log(users.members[m].id);
-    if (users.members[m].id == id) {
-      return users.members[m].name;
-    }
-  }
-  return "unknown member";
+  const user = users.find(user => user.id === id);
+  return user ? user.name : "unknown member";
+}
+
+function listUsers() {
+  return users;
 }
 
 module.exports = {
+  listUsers,
   updateUsers,
   getUsernameFromId
 };
