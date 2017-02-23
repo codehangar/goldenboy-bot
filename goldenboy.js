@@ -17,114 +17,18 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
 }
 
-var https = require('https');
-var slackbot = require('node-slackbot');
-var simplyTrello = require('simply-trello');
-var express = require('express');
-
+const bot = require('./src/bot');
+const server = require('./src/server-web');
 const {trelloCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands} = require('./src/commands');
-
-var botKey = process.env.BOT_KEY;
-var bot = new slackbot(botKey);
-
-var trelloKey = process.env.TRELLO_KEY;
-var trelloToken = process.env.TRELLO_TOKEN;
+const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
+const {updateUsers, getUsernameFromId} = require('./src/users');
+const {updateChannels, getChannelFromId} = require('./src/channels');
+const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 
 
-var meetingNotesMaster = [];
-
-function notesToString(meetingNotesMaster) {
-  notesString = "";
-  for (var i in meetingNotesMaster) {
-    console.log(i);
-    console.log(meetingNotesMaster[i]);
-    console.log(meetingNotesMaster[i].tag);
-    notesString += (meetingNotesMaster[i].tag + " ");
-    notesString += (meetingNotesMaster[i].text + " ");
-    notesString += ("\(added by " + meetingNotesMaster[i].user + "\)\n")
-
-  }
-  return notesString
-}
-
-function updateMeetingNotes(command, messageText, messageChannel, messageUser) {
-  if (command == "clear meeting notes:") {
-    console.log("clearing meeting notes");
-    console.log(messageChannel);
-    bot.sendMessage(messageChannel, "Clearing meeting notes! They're all gone!");
-    meetingNotesMaster = [];
-  } else if (command == "save meeting notes:") {
-    bot.sendMessage(messageChannel, "Saving meeting notes to Trello!");
-    console.log("saving meeting notes");
-    var cardTitle = "Meeting Notes";
-    var cardComment = notesToString(meetingNotesMaster);
-    var cardList = getCardListFromCommand(command);
-    updateTrello(messageChannel, cardList, cardTitle, cardComment);
-  } else if (command == "print meeting notes:") {
-    notesString = notesToString(meetingNotesMaster);
-    bot.sendMessage(messageChannel, notesString);
-    console.log(notesString);
-  } else {
-    bot.sendMessage(messageChannel, "I'll add that to the notes!");
-    writeText = messageText.split(':')[1];
-    var meetingNote = {
-      tag: command,
-      text: writeText,
-      user: messageUser,
-      channel: messageChannel
-
-    }
-    meetingNotesMaster.push(meetingNote);
-  }
-  var writeMessage = messageText.split(command)[1];
-}
-
-function getCardListFromCommand(command) {
-
-  var listDict = {
-    "save meeting notes:": "This Week",
-    "good news:": "This Week",
-    "customer headline:": "This Week",
-    "employee headline:": "This Week",
-    "idea:": "Open",
-    "blog post:": "Blog Article Ideas",
-    "ch todo:": "Open"
-  };
-  var cardList = listDict[command];
-  return cardList;
-}
-
-function updateTrello(messageChannel, cardList, cardTitle, cardComment) {
-
-  var cardBoard;
-  if (cardList == "Blog Article Ideas") {
-    cardBoard = 'Code Hangar Blog';
-  } else {
-    cardBoard = 'Code Hangar General';
-  }
-
-  console.log("Writing to list:");
-  console.log(cardList);
-  var responseText = "I'll add that to the " + cardList + " list."
-  bot.sendMessage(messageChannel, responseText);
-
-  console.log(cardTitle);
-
-
-  simplyTrello.send({
-    key: trelloKey,
-    token: trelloToken
-  }, {
-    path: {
-      board: cardBoard,
-      list: cardList,
-      card: cardTitle
-    },
-    content: {
-      cardComment: cardComment,
-    }
-  });
-}
+const robotName = "goldenboy";
+let goldenBoyEsteem = 75;
+let goldenBoyStatus = 'speak';
 
 function giveHelp(command, message) {
   switch (command) {
@@ -132,7 +36,7 @@ function giveHelp(command, message) {
       bot.sendMessage(message.channel, "Hello! :)");
       break;
     case "help:":
-      allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n"
+      let allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n"
       for (c in allCommands) {
         allCommandsMessage += (allCommands[c] + "\n");
 
@@ -149,15 +53,16 @@ bot.use(function(message, cb) {
 
   var multipleCommandFlag = false; // to be implemented
   if ('message' == message.type) {
+    const lc_message = message.text.toLowerCase();
+
     console.log(getUsernameFromId(message.user) + ' said: ' + message.text);
-    if (getUsernameFromId(message.user) != robotName) {
+    if (getUsernameFromId(message.user) !== robotName) {
 
       if (~message.text.indexOf(robotName) || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
         console.log("found goldenboy mention");
-        lc_message = message.text.toLowerCase();
-        for (var key in allPrewords) {
-          prewordCombo = allPrewords[key] + robotName;
-          prewordAtCombo = allPrewords[key] + '<@U42RZ5QNM>';
+        for (const key in allPrewords) {
+          const prewordCombo = allPrewords[key] + robotName;
+          const prewordAtCombo = allPrewords[key] + '<@U42RZ5QNM>';
           //console.log(prewordCombo);
           //console.log(prewordAtCombo);
           if (~lc_message.indexOf(prewordCombo) || ~lc_message.indexOf(prewordAtCombo)) {
@@ -176,16 +81,15 @@ bot.use(function(message, cb) {
 
       if (~message.text.indexOf(":")) {  // check for commands
         console.log("found colon");
-        lc_message = message.text.toLowerCase();
-        for (var key in allCommands) {
-          command = allCommands[key];
+        for (const key in allCommands) {
+          const command = allCommands[key];
           if (~lc_message.indexOf(command)) {
             console.log("found command " + command);
             if (~trelloCommands.indexOf(command) && goldenBoyStatus != 'sleep') {
               console.log("executing trello command")
-              var cardTitle = message.text.split(command)[1];
-              var cardComment = "Automatically Generated by goldenboy\n" + "User: " + getUsernameFromId(message.user) + "\nChannel: #" + getChannelFromId(message.channel);
-              var cardList = getCardListFromCommand(command)
+              const cardTitle = message.text.split(command)[1];
+              const cardComment = "Automatically Generated by goldenboy\n" + "User: " + getUsernameFromId(message.user) + "\nChannel: #" + getChannelFromId(message.channel);
+              const cardList = getCardListFromCommand(command)
               updateTrello(message.channel, cardList, cardTitle, cardComment);
             }
             if (~noteCommands.indexOf(command) && goldenBoyStatus != 'sleep') {
@@ -212,47 +116,10 @@ bot.use(function(message, cb) {
   cb();
 });
 
-function getUsernameFromId(id) {
-  for (var m in users.members) {
-    //console.log(users.members[m].id);
-    if (users.members[m].id == id) {
-      return users.members[m].name;
-    }
-  }
-  return "unknown member";
-}
-
-function getChannelFromId(id) {
-  for (var c in channels.channels) {
-    if (channels.channels[c].id == id) {
-      return channels.channels[c].name;
-    }
-  }
-  return "unknown channel";
-}
-
-users = {};
-channels = {};
-
-function updateUsers(data) {
-  users = data;
-  for (m in users.members) {
-    //console.log(users.members[m].id);
-
-  }
-}
-
-function updateChannels(data) {
-  channels = data;
-  for (m in channels.channels) {
-    //console.log(channels.channels[m].name)
-  }
-}
-
 function haveFun(command, message) {
   switch (command) {
     case "kill goldenboy:":
-      var noNoNo = "I'm afraid I can't let you do that, " + getUsernameFromId(message.user) + ".";
+      const noNoNo = "I'm afraid I can't let you do that, " + getUsernameFromId(message.user) + ".";
       bot.sendMessage(message.channel, noNoNo);
 
   }
@@ -296,7 +163,7 @@ function changeStatus(preword, message) {
 }
 
 function haveFunPreword(preword, message) {
-  responseInt = getRandomInt(0, 100);
+  const responseInt = getRandomInt(0, 100);
   console.log(responseInt);
 
   switch (preword) {
@@ -515,35 +382,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-var robotName = "goldenboy";
 
-var funPrewords = ["stabilize ", "for ", "kill ", "reward ", "praise ", "scold ", "punish ", "hey ", "hello ", "fuck you "];
-var statusPrewords = ["sleep ", "silence ", "speak ", "status "]
-var allPrewords = funPrewords.concat(statusPrewords); // to be expanded
-
-var goldenBoyEsteem = 75;
-var goldenBoyStatus = 'speak'
-
-bot.api('users.list', {
-  agent: 'node-slack'
-}, function(data) {
-  updateUsers(data)
-});
-bot.api('channels.list', {
-  agent: 'node-slack'
-}, function(data) {
-  updateChannels(data)
-});
-
-
+bot.api('users.list', {agent: 'node-slack'}, updateUsers);
+bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
 bot.connect();
-
-var app = express();
-
-/** Static Files */
-app.use('/', express.static(__dirname + '/web'));
-
-var port = process.env.PORT || 8000;
-var server = app.listen(port, function() {
-  console.log('listening on port: %s', port);
-});
