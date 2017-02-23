@@ -1,0 +1,33 @@
+<div style="display: flex; text-align: center;">
+  <div style="flex: 1">
+    <h1>I am goldenboy.</h1>
+    <h4>Esteem: {{traits.goldenBoyEsteem}} &nbsp; &nbsp; Status: {{traits.goldenBoyStatus}}</h4>
+    <img style="width:600px;" src="goldenboy.jpg" alt="">
+  </div>
+</div>
+<div style="display: flex">
+  <div style="flex: 1">
+    <h3>Users</h3>
+    <ul>
+      {{#each users}}
+        <li style="list-style-type: none">{{name}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  <div style="flex: 1">
+    <h3>Commands</h3>
+    <ul>
+      {{#each allCommands}}
+        <li style="list-style-type: none">{{this}}</li>
+      {{/each}}
+    </ul>
+  </div>
+  <div style="flex: 1">
+    <h3>Channel</h3>
+    <ul>
+      {{#each channels}}
+        <li style="list-style-type: none">{{name}}</li>
+      {{/each}}
+    </ul>
+  </div>
+</div>
