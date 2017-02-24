@@ -4,25 +4,41 @@ const moment = require('moment');
 const bot = require('./bot');
 
 function togglReport(messageText, messageChannel) {
-  const text = messageText.split(':')[1];
-  const period = ['w', 'm'].find(p => text.split(' ').find(chunk => chunk === p) === p);
-  const client = ['mxc', 'mc', 'gmg', 'cfp'].find(c => text.split(' ').find(chunk => chunk === c) === c);
+  const periods = ['w', 'm'];
+  const message_clients = ['mxc', 'mc', 'gmg', 'cfp'];
 
-  const {periodName, since, until} = getDateRange(period);
-  const {clientName, client_ids} = getClient(client);
+  const text = messageText.split(':')[1].toLowerCase();
 
-  toggl.summaryReport({
-    user_agent: process.env.TOGGL_USER_AGENT,
-    workspace_id: process.env.TOGGL_WORKSPACE,
-    billable: 'both',
-    client_ids,
-    since,
-    until
-  }, (err, res) => {
-    const time = secondsToHours(res.total_grand / 1000);
-    const url = `https://www.toggl.com/app/reports/summary/${process.env.TOGGL_WORKSPACE}/period/${periodName}/clients/${client_ids}/billable/both`;
-    bot.sendMessage(messageChannel, `*${time}* spent on *${clientName}* _${periodName}_\n${url}`);
-  });
+  if (~messageText.indexOf('help')){
+    helpMessage = "Available toggl commands\n toggl: help - display this message\n toggl: [period] [client] - return a toggl report for a given client over a given period\n toggl: clients - list the client ids for toggle reports\n toggle: periods - list the periods for the client reports";
+    bot.sendMessage(messageChannel, helpMessage);
+  } else if (~messageText.indexOf('clients')){
+    clientsMessage = "Clients: " + message_clients.join(" ");
+    bot.sendMessage(messageChannel, clientsMessage);
+  } else if (~messageText.indexOf('periods')){
+    periodsMessage = "Periods: " + periods.join(" ");
+    bot.sendMessage(messageChannel, periodsMessage);
+  } else{ 
+    console.log("generating toggl report")
+    const period = periods.find(p => text.split(' ').find(chunk => chunk === p) === p);
+    const client = message_clients.find(c => text.split(' ').find(chunk => chunk === c) === c);
+
+    const {periodName, since, until} = getDateRange(period);
+    const {clientName, client_ids} = getClient(client);
+
+    toggl.summaryReport({
+      user_agent: process.env.TOGGL_USER_AGENT,
+      workspace_id: process.env.TOGGL_WORKSPACE,
+      billable: 'both',
+      client_ids,
+      since,
+      until
+    }, (err, res) => {
+      const time = secondsToHours(res.total_grand / 1000);
+      const url = `https://www.toggl.com/app/reports/summary/${process.env.TOGGL_WORKSPACE}/period/${periodName}/clients/${client_ids}/billable/both`;
+      bot.sendMessage(messageChannel, `*${time}* spent on *${clientName}* _${periodName}_\n${url}`);
+    });
+  }
 }
 
 function getClient(client = 'mxc') {
