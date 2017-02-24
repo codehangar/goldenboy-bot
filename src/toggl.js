@@ -7,18 +7,25 @@ function togglReport(messageText, messageChannel) {
   const periods = ['w', 'm'];
   const message_clients = ['mxc', 'mc', 'gmg', 'cfp'];
 
-  const text = messageText.split(':')[1].toLowerCase();
+  const text = messageText.split(':')[1];
+  console.log(text.length)
+   
+  helpMessage = "Available toggl commands\n toggl: help - display this message\n toggl: [client] return a toggl report for a given client \ntoggl: [period] [client] - return a toggl report for a given client over a given period\n toggl: clients - list the client ids for toggle reports\n toggle: periods - list the periods for the client reports";
+  
 
-  if (~messageText.indexOf('help')){
-    helpMessage = "Available toggl commands\n toggl: help - display this message\n toggl: [period] [client] - return a toggl report for a given client over a given period\n toggl: clients - list the client ids for toggle reports\n toggle: periods - list the periods for the client reports";
+
+  if (text.indexOf('help') > 0){
     bot.sendMessage(messageChannel, helpMessage);
-  } else if (~messageText.indexOf('clients')){
+  } else if (text.indexOf('clients') > 0){
     clientsMessage = "Clients: " + message_clients.join(" ");
     bot.sendMessage(messageChannel, clientsMessage);
-  } else if (~messageText.indexOf('periods')){
+  } else if (text.indexOf('periods') > 0){
     periodsMessage = "Periods: " + periods.join(" ");
     bot.sendMessage(messageChannel, periodsMessage);
-  } else{ 
+  } else if (text.length == 0){
+    bot.sendMessage(messageChannel, helpMessage);
+
+  } else  { 
     console.log("generating toggl report")
     const period = periods.find(p => text.split(' ').find(chunk => chunk === p) === p);
     const client = message_clients.find(c => text.split(' ').find(chunk => chunk === c) === c);
