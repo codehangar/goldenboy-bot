@@ -2,7 +2,7 @@
   "name": "goldenboy-bot",
   "version": "1.0.0",
   "description": "Code Hangar's goldenboy",
-  "main": "goldenboy_keyless.js",
+  "main": "goldenboy.js",
   "scripts": {
     "start": "NODE_ENV=development node goldenboy",
     "dev": "NODE_ENV=development nodemon goldenboy",
@@ -27,7 +27,9 @@
     "dotenv": "^4.0.0",
     "express": "^4.14.1",
     "express-handlebars": "^3.0.0",
+    "moment": "^2.17.1",
     "node-slackbot": "0.0.6",
-    "simply-trello": "0.0.9"
+    "simply-trello": "0.0.9",
+    "toggl-api": "^1.0.1"
   }
 }
