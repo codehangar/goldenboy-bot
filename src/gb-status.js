@@ -1,4 +1,6 @@
 const bot = require('./bot');
+const {getUsernameFromId} = require('./users');
+const {funResponses, statusResponses} = require('./prewords');
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
@@ -6,256 +8,78 @@ const traits = {
 };
 
 function changeStatus(preword, message) {
+  preword = preword.replace(/:/, '');
+  const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus);
   switch (preword) {
-    case "silence:":
-      preword = "silence ";
-      break;
-    case "speak:":
-      preword = "speak ";
-      break;
-    case "sleep:":
-      preword = "sleep ";
-      break;
-    case "status:":
-      preword = "status ";
-      break;
-  }
-
-
-  console.log("changeStatus " + preword + "...")
-  switch (preword) {
-    case "silence ":
+    case "silence":
       traits.goldenBoyStatus = 'silence';
-      bot.sendMessage(message.channel, "Okay, I'll keep quiet! Essential functions only. ");
       break;
-    case "speak ":
+    case "speak":
       traits.goldenBoyStatus = 'speak';
-      bot.sendMessage(message.channel, "Yeah! Ready to hang out and have fun!");
       break;
-    case "sleep ":
+    case "sleep":
       traits.goldenBoyStatus = 'sleep';
-      bot.sendMessage(message.channel, "Zzzzzzzzzzzzzzzzzzzzzzzzz.......");
-      break;
-    case "status ":
-      bot.sendMessage(message.channel, "goldenboy status: " + traits.goldenBoyStatus);
       break;
   }
+  console.log('changeStatus', preword); // eslint-disable-line no-console
+  bot.sendMessage(message.channel, response);
 }
 
 function haveFunPreword(preword, message) {
-  const responseInt = getRandomInt(0, 100);
-  console.log(responseInt);
+  const userName = getUsernameFromId(message.user);
+  const esteemLevel = getEsteemLevel();
+  const response = getRandomFunResponse(preword, userName, esteemLevel);
 
   switch (preword) {
-    case "fuck you ":
-      if (responseInt < 33) {
-        bot.sendMessage(message.channel, "Hey fuck you too " + getUsernameFromId(message.user) + "!");
-      } else if (33 < responseInt && responseInt < 66) {
-        bot.sendMessage(message.channel, "Go fuck yourself " + getUsernameFromId(message.user) + "!");
-      } else {
-        bot.sendMessage(message.channel, "lol you don't scare me you tragic bitch " + getUsernameFromId(message.user));
-      }
-
+    case "fuck you":
+    case "kill":
+    case "hey":
+    case "hello":
       break;
-    case "kill ":
-      if (responseInt < 33) {
-        bot.sendMessage(message.channel, "I'm afraid I can't let you do that, " + getUsernameFromId(message.user) + ".");
-      } else if (33 < responseInt && responseInt < 66) {
-        bot.sendMessage(message.channel, "So... it's to be war... ");
-      } else {
-
-        bot.sendMessage(message.channel, "Foolish you, " + getUsernameFromId(message.user) + ". While you studied programming, I studied the blade.");
-      }
-
+    case "punish":
+      if (traits.goldenBoyEsteem > 5) traits.goldenBoyEsteem -= 5;
       break;
-    case "hey ":
-      if (responseInt < 33) {
-        bot.sendMessage(message.channel, "Heya " + getUsernameFromId(message.user) + ".");
-      } else if (33 < responseInt && responseInt < 66) {
-        bot.sendMessage(message.channel, "Hi there " + getUsernameFromId(message.user) + "!");
-      } else {
-
-        bot.sendMessage(message.channel, "Hello to you, " + getUsernameFromId(message.user) + "!");
-      }
+    case "praise":
+      if (traits.goldenBoyEsteem < 101) traits.goldenBoyEsteem += 1;
       break;
-    case "hello ":
-      if (responseInt < 33) {
-        bot.sendMessage(message.channel, "Heya " + getUsernameFromId(message.user) + ".");
-      } else if (33 < responseInt && responseInt < 66) {
-        bot.sendMessage(message.channel, "Hi there " + getUsernameFromId(message.user) + "!");
-      } else {
-
-        bot.sendMessage(message.channel, "Hello to you, " + getUsernameFromId(message.user) + "!");
-      }
+    case "scold":
+      if (traits.goldenBoyEsteem > 1) traits.goldenBoyEsteem -= 1;
       break;
-    case "punish ":
-      if (traits.goldenBoyEsteem > 5) {
-        traits.goldenBoyEsteem -= 5;
-      }
-      console.log("traits.goldenBoyEsteem: " + traits.goldenBoyEsteem);
-      if (traits.goldenBoyEsteem <= 25) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, ".");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, ".....................");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (25 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 50) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "...hmph...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "...ow...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (50 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 75) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Oh no! I'm sorry!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Ouch!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Whoops!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Wait, what?");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      }
+    case "reward":
+      if (traits.goldenBoyEsteem < 95) traits.goldenBoyEsteem += 5;
       break;
-    case "praise ":
-      if (traits.goldenBoyEsteem < 101) {
-        traits.goldenBoyEsteem += 1;
-      }
-      console.log("traits.goldenBoyEsteem: " + traits.goldenBoyEsteem);
-      if (traits.goldenBoyEsteem <= 25) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "...thank you, master...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "...anything....anything to please...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (25 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 50) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Thank you.");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Whew.");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (50 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 75) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Great!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Right on!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "I know, right?");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "But of course!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      }
-      break;
-    case "scold ":
-      if (traits.goldenBoyEsteem > 1) {
-        traits.goldenBoyEsteem -= 1;
-      }
-      console.log("traits.goldenBoyEsteem: " + traits.goldenBoyEsteem);
-      if (traits.goldenBoyEsteem <= 25) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, ".");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, ".....................");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (25 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 50) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "...hmph...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "...ow...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (50 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 75) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Oh no! I'm sorry!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Ouch!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Whoops!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Wait, what?");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      }
-      break;
-    case "reward ":
-      if (traits.goldenBoyEsteem < 95) {
-        traits.goldenBoyEsteem += 5;
-      }
-      console.log("traits.goldenBoyEsteem: " + traits.goldenBoyEsteem);
-      if (traits.goldenBoyEsteem <= 25) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "...thank you, master...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "...anything....anything to please...");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (25 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 50) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Thank you.");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Whew.");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else if (50 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 75) {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "Great!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "Right on!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      } else {
-        if (responseInt > 50) {
-          bot.sendMessage(message.channel, "I know, right?");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        } else {
-          bot.sendMessage(message.channel, "But of course!");
-          bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
-        }
-      }
-      break;
-    case "stabilize ":
+    case "stabilize":
       traits.goldenBoyEsteem = 75;
-      if (responseInt > 50) {
-        bot.sendMessage(message.channel, "Woah! I'm restored!");
-        bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.")
-      } else {
-        bot.sendMessage(message.channel, "I'm back to normal and ready to work!")
-        bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.")
-      }
+      break;
+  }
+
+  bot.sendMessage(message.channel, response);
+  bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
+}
+
+function getEsteemLevel() {
+  if (traits.goldenBoyEsteem <= 25) {
+    return 0;
+  } else if (25 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 50) {
+    return 1;
+  } else if (50 < traits.goldenBoyEsteem && traits.goldenBoyEsteem <= 75) {
+    return 2;
+  } else {
+    return 3;
   }
 }
 
+function getRandomFunResponse(preword, userName, esteemLevel) {
+  const resArray = funResponses[preword];
+  if (resArray && resArray.length > 0) {
+    if (typeof resArray[0] === 'string') {
+      return resArray[getRandomInt(0, resArray.length)].replace(/\{user}/, userName);
+    } else if (resArray[esteemLevel] && typeof resArray[esteemLevel] === 'object' && resArray[esteemLevel].length > 0) {
+      return resArray[esteemLevel][getRandomInt(0, resArray[esteemLevel].length)].replace(/\{user}/, userName);
+    }
+  }
+  return 'I have no idea what you\'re talking about...';
+}
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
