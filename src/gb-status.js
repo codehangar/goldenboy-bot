@@ -4,12 +4,26 @@ const {funResponses, statusResponses} = require('./prewords');
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
-  goldenBoyStatus: 'speak'
+  goldenBoyStatus: 'speak',
+  startTime: 0
 };
+
+function format_uptime(seconds){
+  function pad(s){
+    return (s < 10 ? '0' : '') + s;
+  }
+  var hours = Math.floor(seconds / (60*60));
+  var minutes = Math.floor(seconds % (60*60) / 60);
+  var seconds = Math.floor(seconds % 60);
+
+  return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+}
+
+
 
 function changeStatus(preword, message) {
   preword = preword.replace(/:/, '');
-  const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus);
+  const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus).replace(/\{uptime}/, format_uptime((new Date().getTime() / 1000) - traits.startTime));
   switch (preword) {
     case "silence":
       traits.goldenBoyStatus = 'silence';

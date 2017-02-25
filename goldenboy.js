@@ -26,6 +26,7 @@ const {updateChannels, getChannelFromId} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
 const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
+//const {user_swears = require('./src/user-metrics')}
 
 
 function giveHelp(command, message) {
@@ -130,4 +131,5 @@ function haveFun(command, message) {
 
 bot.api('users.list', {agent: 'node-slack'}, updateUsers);
 bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
+traits.startTime = new Date().getTime() / 1000;
 bot.connect();
