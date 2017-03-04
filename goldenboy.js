@@ -19,14 +19,19 @@ if (process.env.NODE_ENV === 'development') {
 
 const bot = require('./src/bot');
 const server = require('./web/server-web');
-const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands} = require('./src/commands');
+const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
-const {updateUsers, getUsernameFromId} = require('./src/users');
+const {updateUsers, getUsernameFromId, updateSwearJar, getSwearJar, getUserSwearCount} = require('./src/users');
 const {updateChannels, getChannelFromId} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
+<<<<<<< Updated upstream
 const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
+=======
+const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
+const {swears} = require('./src/swears');
+>>>>>>> Stashed changes
 
 
 function giveHelp(command, message) {
@@ -54,6 +59,21 @@ bot.use(function(message, cb) {
 
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
+      var swearCount = 0; 
+
+      swears.forEach(function(swear){
+        var swear_check = swear.exec(lc_message);
+        if(swear_check){
+          console.log("detected swear");
+            swearCount = swearCount + 1;
+            
+        }
+
+      });
+      if(swearCount){
+        bot.sendMessage(message.channel, "Woah! +" + swearCount.toString() + " to the swear jar for " + userName + " :poop: :skull:");
+        updateSwearJar(userName, swearCount);
+      }
 
       if (~message.text.indexOf(robotName) || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
         console.log("found goldenboy mention");
@@ -106,6 +126,10 @@ bot.use(function(message, cb) {
               console.log("executing status command");
               changeStatus(command, message);
             }
+            if (~swearCommands.indexOf(command)){
+              console.log("executing swear command");
+              checkSwears(command, message);
+            }
           }
         });
       }
@@ -127,7 +151,6 @@ function haveFun(command, message) {
       break;
   }
 }
-
 
 bot.api('users.list', {agent: 'node-slack'}, updateUsers);
 bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
