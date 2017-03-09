@@ -8,7 +8,7 @@ const traits = {
   startTime: 0
 };
 
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 function format_uptime(seconds){
   function pad(s){
     return (s < 10 ? '0' : '') + s;
@@ -22,7 +22,7 @@ function format_uptime(seconds){
 
 
 
-=======
+//=======
 function checkSwears(command, message){
   m_text = message.text.split(':')[1];
   if(m_text){
@@ -51,7 +51,7 @@ function checkSwears(command, message){
   }
 }
 
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 function changeStatus(preword, message) {
   preword = preword.replace(/:/, '');
   const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus).replace(/\{uptime}/, format_uptime((new Date().getTime() / 1000) - traits.startTime));

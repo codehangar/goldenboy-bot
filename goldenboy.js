@@ -22,16 +22,16 @@ const server = require('./web/server-web');
 const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId, updateSwearJar, getSwearJar, getUserSwearCount} = require('./src/users');
-const {updateChannels, getChannelFromId} = require('./src/channels');
+const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
-<<<<<<< Updated upstream
-const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
+//<<<<<<< Updated upstream
+//const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
-=======
+//=======
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
 const {swears} = require('./src/swears');
->>>>>>> Stashed changes
+//>>>>>>> Stashed changes
 
 
 function giveHelp(command, message) {
@@ -42,7 +42,9 @@ function giveHelp(command, message) {
     case "help:":
       let allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n";
       allCommandsMessage += allCommands.reduce((a, b) => a + '\n' + b);
-      bot.sendMessage(message.channel, allCommandsMessage);
+      message_location = getIMfromUID(message.user)
+      console.log(message_location)
+      bot.sendMessage(message_location, allCommandsMessage);
       break;
   }
 }
@@ -154,5 +156,6 @@ function haveFun(command, message) {
 
 bot.api('users.list', {agent: 'node-slack'}, updateUsers);
 bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
+bot.api('im.list', {agent: 'node-slack'}, updateIMs);
 traits.startTime = new Date().getTime() / 1000;
 bot.connect();
