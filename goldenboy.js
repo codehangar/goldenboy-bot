@@ -19,12 +19,13 @@ if (process.env.NODE_ENV === 'development') {
 
 const bot = require('./src/bot');
 const server = require('./web/server-web');
-const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands} = require('./src/commands');
+const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId, updateSwearJar, getSwearJar, getUserSwearCount} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
+const {createGoldenboyIssue} = require('./src/github')
 //<<<<<<< Updated upstream
 //const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
@@ -131,6 +132,11 @@ bot.use(function(message, cb) {
             if (~swearCommands.indexOf(command)){
               console.log("executing swear command");
               checkSwears(command, message);
+            }
+            if (~githubCommands.indexOf(command)){
+              console.log("executing github command)");
+              createGoldenboyIssue(message);
+
             }
           }
         });

@@ -5,7 +5,8 @@ const helpCommands = ["help:", "hello:"];
 const statusCommands = ["sleep:", "speak:", "silence:", "status:", "uptime:"];
 const funCommands = ["kill:", "punish:", "reward:"];
 const swearCommands = ["swearjar:"]; // to be expanded ?
-const allCommands = trelloCommands.concat(togglCommands).concat(noteCommands).concat(helpCommands).concat(funCommands).concat(statusCommands).concat(swearCommands);
+const githubCommands = ["issue:"];
+const allCommands = trelloCommands.concat(togglCommands).concat(noteCommands).concat(helpCommands).concat(funCommands).concat(statusCommands).concat(swearCommands).concat(githubCommands);
 
 module.exports = {
   trelloCommands,
@@ -15,5 +16,6 @@ module.exports = {
   statusCommands,
   funCommands,
   allCommands,
-  swearCommands
+  swearCommands,
+  githubCommands
 };
