@@ -27,6 +27,7 @@ const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./sr
 const {togglReport} = require('./src/toggl');
 const {createGoldenboyIssue} = require('./src/github')
 const {hates, expressHatred} = require('./src/hates')
+const {loves, expressLove} = require('./src/loves')
 //<<<<<<< Updated upstream
 //const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
@@ -79,13 +80,24 @@ bot.use(function(message, cb) {
         updateSwearJar(userName, swearCount);
       }
 
-      hates.forEach(function(hate){
+      // check for hates
+      hates.forEach(function(hate){ 
         if (~lc_message.indexOf(hate)){
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
           expressHatred(hate_minus_apostraphe, message);
         }
       });
+
+      // check for loves
+      loves.forEach(function(love){ 
+        if (~lc_message.indexOf(love)){
+          const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
+          const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
+          expressLove(love_minus_apostrophe, message);
+        }
+      });
+
 
       if (~message.text.indexOf(robotName) || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
         console.log("found goldenboy mention");

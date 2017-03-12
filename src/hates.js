@@ -1,6 +1,6 @@
 const bot = require('./bot');
 
-const hates = ["microsoft", "hitler", "nazi", "nazis", "aaron blankenship", "sexism", "sexist"]
+const hates = ["microsoft", "microsofts", "microsoft\'s", "hitler", "hitlers", "hitler\'s", "nazi", "nazis", "nazi\'s", "aaron blankenship", "sexism", "sexism\'s", "sexist", "sexists", "sexist\'s"];
 const hateResponses =  {
   "aaron blankenship": [
     "Aaron Blankenship deserves a lifetime of fear and pain as far as I'm concerned! Wow! :smiley: :joy:",
@@ -36,6 +36,8 @@ const hateResponses =  {
 
 
 function expressHatred(hate, message){
+	console.log("expressing hatred");
+	console.log(hate);
 	const resArray = hateResponses[hate];
 	bot.sendMessage(message.channel, resArray[getRandomInt(0, resArray.length)]);
 }
