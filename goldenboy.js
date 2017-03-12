@@ -81,7 +81,9 @@ bot.use(function(message, cb) {
 
       hates.forEach(function(hate){
         if (~lc_message.indexOf(hate)){
-          expressHatred(hate, message);
+          const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
+          const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
+          expressHatred(hate_minus_apostraphe, message);
         }
       });
 
