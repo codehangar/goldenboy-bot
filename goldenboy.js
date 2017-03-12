@@ -26,6 +26,7 @@ const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./s
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
 const {createGoldenboyIssue} = require('./src/github')
+const {hates, expressHatred} = require('./src/hates')
 //<<<<<<< Updated upstream
 //const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
@@ -77,6 +78,12 @@ bot.use(function(message, cb) {
         bot.sendMessage(message.channel, "Woah! +" + swearCount.toString() + " to the swear jar for " + userName + " :poop: :skull:");
         updateSwearJar(userName, swearCount);
       }
+
+      hates.forEach(function(hate){
+        if (~lc_message.indexOf(hate)){
+          expressHatred(hate, message);
+        }
+      });
 
       if (~message.text.indexOf(robotName) || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
         console.log("found goldenboy mention");
