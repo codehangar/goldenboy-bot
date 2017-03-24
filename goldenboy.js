@@ -59,7 +59,7 @@ bot.use(function(message, cb) {
 
 
   const multipleCommandFlag = false; // to be implemented
-  if (message.type === 'message') {
+  if (message.type === 'message' && message.text) {
     const lc_message = message.text.toLowerCase();
     const userName = getUsernameFromId(message.user);
 
