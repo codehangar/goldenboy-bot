@@ -1,6 +1,7 @@
 const bot = require('./bot');
-const {listUsers, getUsernameFromId, getSwearJar, getUserSwearCount} = require('./users');
+const {listUsers, getUsernameFromId, getSwearJar, getUserSwearCount2} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
+const {getUserSwearCount} = require('./rethinkdb_gb')
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
@@ -32,7 +33,8 @@ function checkSwears(command, message){
       //console.log(user.name);
       if(~m_text.indexOf(user.name)){
         userFound = true;
-        bot.sendMessage(message.channel, user.name + " has sworn " + getUserSwearCount(user.name) + " times since I last came online!");
+        getUserSwearCount(message, user.name);
+        //bot.sendMessage(message.channel, user.name + " has sworn " + getUserSwearCount2(user.name) + " times since I last came online!");
         }
     
       });
