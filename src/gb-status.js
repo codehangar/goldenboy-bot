@@ -1,15 +1,60 @@
 const bot = require('./bot');
-const {getUsernameFromId} = require('./users');
+const {listUsers, getUsernameFromId, getSwearJar, getUserSwearCount} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
-  goldenBoyStatus: 'speak'
+  goldenBoyStatus: 'speak',
+  startTime: 0
 };
 
+//<<<<<<< Updated upstream
+function format_uptime(seconds){
+  function pad(s){
+    return (s < 10 ? '0' : '') + s;
+  }
+  var hours = Math.floor(seconds / (60*60));
+  var minutes = Math.floor(seconds % (60*60) / 60);
+  var seconds = Math.floor(seconds % 60);
+
+  return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+}
+
+
+
+//=======
+function checkSwears(command, message){
+  m_text = message.text.split(':')[1];
+  if(m_text){
+    var userFound = false;
+    users = listUsers();
+    users.forEach(function(user){
+      //console.log(user.name);
+      if(~m_text.indexOf(user.name)){
+        userFound = true;
+        bot.sendMessage(message.channel, user.name + " has sworn " + getUserSwearCount(user.name) + " times since I last came online!");
+        }
+    
+      });
+    if(!userFound){
+      bot.sendMessage(message.channel, "I can't find any user in that message!");
+    }
+  } else {
+    swearJar = getSwearJar();
+    returnString = "";
+    swearJar.forEach(function(entry){
+      returnString.append(entry)
+      returnString.append("\n");
+    });
+    console.log(returnString);
+    bot.sendMessage(message.channel, returnString);
+  }
+}
+
+//>>>>>>> Stashed changes
 function changeStatus(preword, message) {
   preword = preword.replace(/:/, '');
-  const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus);
+  const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus).replace(/\{uptime}/, format_uptime((new Date().getTime() / 1000) - traits.startTime));
   switch (preword) {
     case "silence":
       traits.goldenBoyStatus = 'silence';
@@ -87,5 +132,5 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-module.exports = {robotName, traits, changeStatus, haveFunPreword};
+module.exports = {robotName, traits, changeStatus, haveFunPreword, checkSwears};
 

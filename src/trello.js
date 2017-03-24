@@ -1,8 +1,9 @@
 const simplyTrello = require('simply-trello');
 const Trello = require("node-trello");
-const trello = new Trello(process.env.TRELLO_KEY, process.env.TRELLO_TOKEN);
 const trelloKey = process.env.TRELLO_KEY;
 const trelloToken = process.env.TRELLO_TOKEN;
+console.log(trelloKey);
+const trello = new Trello(trelloKey, trelloToken);
 const bot = require('./bot');
 
 let meetingNotesMaster = [];

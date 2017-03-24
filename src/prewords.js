@@ -95,7 +95,10 @@ const statusResponses = {
   "speak": "Yeah! Ready to hang out and have fun!",
   "sleep": "Zzzzzzzzzzzzzzzzzzzzzzzzz.......",
   "status": "goldenboy status: {status}",
+  "uptime": "Here's how long I've been awake!\n\n {uptime}" 
 };
+
+
 
 module.exports = {
   funPrewords,
