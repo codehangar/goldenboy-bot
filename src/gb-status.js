@@ -31,7 +31,7 @@ function checkSwears(command, message){
     users = listUsers();
     users.forEach(function(user){
       //console.log(user.name);
-      if(~m_text.indexOf(user.name)){
+      if(m_text.indexOf(user.name) > -1){
         userFound = true;
         getUserSwearCount(message, user.name);
         //bot.sendMessage(message.channel, user.name + " has sworn " + getUserSwearCount2(user.name) + " times since I last came online!");
