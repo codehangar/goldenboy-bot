@@ -21,13 +21,14 @@ const bot = require('./src/bot');
 const server = require('./web/server-web');
 const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
-const {updateUsers, getUsernameFromId, updateSwearJar, getSwearJar, getUserSwearCount} = require('./src/users');
+const {updateUsers, getUsernameFromId} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
 const {createGoldenboyIssue} = require('./src/github')
 const {hates, expressHatred} = require('./src/hates')
 const {loves, expressLove} = require('./src/loves')
+const {createRethinkUser, incrementUserSwearCount, getUserSwearCount} = require('./src/rethinkdb_gb')
 //<<<<<<< Updated upstream
 //const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
 //const {user_swears = require('./src/user-metrics')}
@@ -58,7 +59,7 @@ bot.use(function(message, cb) {
 
 
   const multipleCommandFlag = false; // to be implemented
-  if (message.type === 'message') {
+  if (message.type === 'message' && message.text) {
     const lc_message = message.text.toLowerCase();
     const userName = getUsernameFromId(message.user);
 
@@ -77,7 +78,7 @@ bot.use(function(message, cb) {
       });
       if(swearCount){
         bot.sendMessage(message.channel, "Woah! +" + swearCount.toString() + " to the swear jar for " + userName + " :poop: :skull:");
-        updateSwearJar(userName, swearCount);
+        incrementUserSwearCount(userName, swearCount);
       }
 
       // check for hates

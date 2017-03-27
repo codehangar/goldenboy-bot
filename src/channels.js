@@ -7,7 +7,6 @@ function updateChannels(data) {
 
 function updateIMs(data) {
 	ims = data.ims;
-	console.log(ims);
 }
 
 function getIMfromUID(uid) {

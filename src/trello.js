@@ -2,7 +2,6 @@ const simplyTrello = require('simply-trello');
 const Trello = require("node-trello");
 const trelloKey = process.env.TRELLO_KEY;
 const trelloToken = process.env.TRELLO_TOKEN;
-console.log(trelloKey);
 const trello = new Trello(trelloKey, trelloToken);
 const bot = require('./bot');
 
