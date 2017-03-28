@@ -25,17 +25,12 @@ const {updateUsers, getUsernameFromId} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
-const {createGoldenboyIssue} = require('./src/github')
-const {hates, expressHatred} = require('./src/hates')
-const {loves, expressLove} = require('./src/loves')
-const {createRethinkUser, incrementUserSwearCount, getUserSwearCount} = require('./src/rethinkdb_gb')
-//<<<<<<< Updated upstream
-//const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
-//const {user_swears = require('./src/user-metrics')}
-//=======
+const {createGoldenboyIssue} = require('./src/github');
+const {hates, expressHatred} = require('./src/hates');
+const {loves, expressLove} = require('./src/loves');
+const {incrementUserSwearCount} = require('./src/rethinkdb_gb');
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
 const {swears} = require('./src/swears');
-//>>>>>>> Stashed changes
 
 
 function giveHelp(command, message) {
@@ -65,25 +60,24 @@ bot.use(function(message, cb) {
 
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
-      var swearCount = 0; 
+      let swearCount = 0;
 
-      swears.forEach(function(swear){
-        var swear_check = swear.exec(lc_message);
-        if(swear_check){
+      swears.forEach(function(swear) {
+        const swear_check = swear.exec(lc_message);
+        if (swear_check) {
           console.log("detected swear");
-            swearCount = swearCount + 1;
-            
+          swearCount = swearCount + 1;
         }
-
       });
-      if(swearCount){
-        bot.sendMessage(message.channel, "Woah! +" + swearCount.toString() + " to the swear jar for " + userName + " :poop: :skull:");
-        incrementUserSwearCount(userName, swearCount);
+      if (swearCount) {
+        incrementUserSwearCount(message.user, swearCount).then((res) => {
+          bot.sendMessage(message.channel, "Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:");
+        });
       }
 
       // check for hates
-      hates.forEach(function(hate){ 
-        if (~lc_message.indexOf(hate)){
+      hates.forEach(function(hate) {
+        if (~lc_message.indexOf(hate)) {
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
           expressHatred(hate_minus_apostraphe, message);
@@ -91,8 +85,8 @@ bot.use(function(message, cb) {
       });
 
       // check for loves
-      loves.forEach(function(love){ 
-        if (~lc_message.indexOf(love)){
+      loves.forEach(function(love) {
+        if (~lc_message.indexOf(love)) {
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
           expressLove(love_minus_apostrophe, message);
@@ -151,11 +145,11 @@ bot.use(function(message, cb) {
               console.log("executing status command");
               changeStatus(command, message);
             }
-            if (~swearCommands.indexOf(command)){
+            if (~swearCommands.indexOf(command)) {
               console.log("executing swear command");
               checkSwears(command, message);
             }
-            if (~githubCommands.indexOf(command)){
+            if (~githubCommands.indexOf(command)) {
               console.log("executing github command)");
               createGoldenboyIssue(message);
 
