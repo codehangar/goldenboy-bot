@@ -1,68 +1,113 @@
 const r = require('rethinkdb');
 const bot = require('./bot');
-const rethinkHost  = process.env.RETHINK_HOST.toString();
-const rethinkPort = process.env.RETHINK_PORT;
-var connection = null;
+const connectionInfo = {
+  host: process.env.RETHINK_HOST,
+  port: process.env.RETHINK_PORT,
+  db: 'goldenboy_db'
+};
+const usersTable = 'users';
+const tableExistsMsg = 'Table `' + connectionInfo.db + '.' + usersTable + '` already exists.';
+let connection = null;
 
-
-function createRethinkUser(username){
-    r.connect( {host: rethinkHost , port: rethinkPort, db: 'goldenboy_db'}, function(err, conn) {
-        if (err) throw err;
-        r.table("users").insert({
-            username: username,
-            swear_count: 0
-            }).run(conn, function(){console.log("checked for " + username)})
-
-        conn.close(function(err) { if (err) throw err; })
-    })
-
-
+function createUsersTable(conn) {
+  return new Promise((resolve, reject) => {
+    r.tableCreate(usersTable, {
+      primaryKey: 'id'
+    }).run(conn).then((res) => {
+      console.log('createUsersTable', res); // eslint-disable-line no-console
+      resolve();
+    }).catch((err) => {
+      if (err.name === 'ReqlOpFailedError' && err.msg === tableExistsMsg) {
+        resolve();
+      } else {
+        reject(err);
+      }
+    });
+  });
 }
 
-function incrementUserSwearCount(username, added_swears){
-    r.connect( {host: rethinkHost , port: rethinkPort, db: 'goldenboy_db'}, function(err, conn) {
-        if (err) throw err;
-
-        r.table("users").filter({username : username}).update({
-            swear_count : r.row("swear_count").add(added_swears)
-        }).run(conn, function(){ console.log("incremented " + username)})
-
-        conn.close(function(err) { if (err) throw err; })
-    })
-
-
+function initConnection() {
+  return new Promise((resolve, reject) => {
+    r.connect(connectionInfo).then(function(conn) {
+      conn.on('close', function() {
+        console.warn('------------------------------------------------------'); // eslint-disable-line no-console
+        console.warn('*********** closed a database connection *************');
+        console.warn('------------------------------------------------------'); // eslint-disable-line no-console
+      });
+      createUsersTable(conn).then(() => {
+        resolve(conn);
+      });
+    }).catch(function(err) {
+      reject(err);
+    });
+  });
 }
 
-function getUserSwearCount(message, username){
-   var swears = 0;
-   r.connect( {host: rethinkHost , port: rethinkPort, db: 'goldenboy_db'}, function(err, conn) {
-    if (err) throw err;
+function getConnection() {
+  if (connection) {
+    return connection;
+  } else {
+    connection = initConnection();
+    return connection;
+  }
+}
 
-    r.table("users").filter({username : username}).run(conn, function(){ console.log("ostensibly got user swears for " + username)}).then(function(result){
-        result.each(function(err, row){
-            uname = row['username']
-            //console.log(uname)
-            swears = row['swear_count'];
-            //console.log('returning swears');
-            //console.log(swears);
-            bot.sendMessage(message.channel, username + " has sworn " + swears.toString() + " times! Yikes!");
-    
-        //return swears; 
+function createRethinkUsers(users) {
+  return new Promise((resolve, reject) => {
+    getConnection().then(conn => {
+      r.table(usersTable)
+        .insert(users, {
+          conflict: (id, oldDoc, newDoc) => {
+            return oldDoc;
+          }
         })
-    }, function(err) {
-        console.log(err);
-    })
-
-    conn.close(function(err) { if (err) throw err; })
-})  
-   
-   //return swears; /// implement 'when done ' promise
-
-
+        .run(conn)
+        .then(resolve);
+    });
+  });
 }
 
-module.exports={
-    createRethinkUser,
-    incrementUserSwearCount,
-    getUserSwearCount
+function incrementUserSwearCount(userId, added_swears) {
+  return new Promise((resolve, reject) => {
+    getConnection().then(conn => {
+      r.table(usersTable)
+        .get(userId)
+        .update({
+          swear_count: r.row('swear_count').add(added_swears)
+        })
+        .run(conn)
+        .then(resolve);
+    });
+  });
 }
+
+function getSwearUsers() {
+  return new Promise((resolve, reject) => {
+    getConnection().then(conn => {
+      r.table(usersTable)
+        .filter(r.row('swear_count').gt(0))
+        .orderBy(r.desc('swear_count'))
+        .run(conn)
+        .then(resolve);
+    });
+  });
+}
+
+function getUserSwearCount(userId) {
+  return new Promise((resolve, reject) => {
+    getConnection().then(conn => {
+      r.table(usersTable)
+        .get(userId)
+        .getField('swear_count')
+        .run(conn)
+        .then(resolve);
+    });
+  });
+}
+
+module.exports = {
+  createRethinkUsers,
+  incrementUserSwearCount,
+  getUserSwearCount,
+  getSwearUsers
+};

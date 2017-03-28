@@ -68,12 +68,11 @@ bot.use(function(message, cb) {
       var swearCount = 0; 
 
       swears.forEach(function(swear){
-        var swear_check = swear.exec(lc_message);
-        if(swear_check){
-          console.log("detected swear");
-            swearCount = swearCount + 1;
-            
+        while (swear.exec(lc_message) != null){
+        swearCount = swearCount + 1;
+        console.log("!");
         }
+
 
       });
       if(swearCount){
@@ -83,7 +82,7 @@ bot.use(function(message, cb) {
 
       // check for hates
       hates.forEach(function(hate){ 
-        if (~lc_message.indexOf(hate)){
+        if (lc_message.indexOf(hate) > -1){
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
           expressHatred(hate_minus_apostraphe, message);
@@ -92,7 +91,7 @@ bot.use(function(message, cb) {
 
       // check for loves
       loves.forEach(function(love){ 
-        if (~lc_message.indexOf(love)){
+        if (lc_message.indexOf(love) > -1){
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
           expressLove(love_minus_apostrophe, message);
@@ -100,7 +99,7 @@ bot.use(function(message, cb) {
       });
 
 
-      if (~message.text.indexOf(robotName) || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
+      if (message.text.indexOf(robotName) > -1 || ~message.text.indexOf('<@U42RZ5QNM>')) { // check for golden boy mention
         console.log("found goldenboy mention");
         allPrewords.forEach(function(preword) {
           const prewordCombo = preword + ' ' + robotName;
@@ -119,10 +118,10 @@ bot.use(function(message, cb) {
       }
 
 
-      if (~message.text.indexOf(":")) {  // check for commands
+      if (message.text.indexOf(":") > -1) {  // check for commands
         console.log("found colon");
         allCommands.forEach(function(command) {
-          if (~lc_message.indexOf(command)) {
+          if (lc_message.indexOf(command) > -1) {
             console.log("found command " + command);
             if (~trelloCommands.indexOf(command) && traits.goldenBoyStatus != 'sleep') {
               console.log("executing trello command");
@@ -131,31 +130,31 @@ bot.use(function(message, cb) {
               const cardList = getCardListFromCommand(command);
               updateTrello(message.channel, cardList, cardTitle, {cardComment});
             }
-            if (~togglCommands.indexOf(command) && traits.goldenBoyStatus != 'sleep') {
+            if (togglCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
               console.log("executing toggl command");
               togglReport(message.text, message.channel);
             }
-            if (~noteCommands.indexOf(command) && traits.goldenBoyStatus != 'sleep') {
+            if (noteCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
               console.log("executing meeting note command");
               updateMeetingNotes(command, message.text, message.channel, userName);
             }
-            if (~helpCommands.indexOf(command) && traits.goldenBoyStatus != 'sleep') {
+            if (helpCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
               console.log("executing help command");
               giveHelp(command, message);
             }
-            if (~funCommands.indexOf(command) && traits.goldenBoyStatus == 'speak') {
+            if (funCommands.indexOf(command) > -1 && traits.goldenBoyStatus == 'speak') {
               console.log("executing fun command");
               haveFun(command, message);
             }
-            if (~statusCommands.indexOf(command)) {
+            if (statusCommands.indexOf(command) > -1) {
               console.log("executing status command");
               changeStatus(command, message);
             }
-            if (~swearCommands.indexOf(command)){
+            if (swearCommands.indexOf(command) > -1){
               console.log("executing swear command");
               checkSwears(command, message);
             }
-            if (~githubCommands.indexOf(command)){
+            if (githubCommands.indexOf(command) > -1){
               console.log("executing github command)");
               createGoldenboyIssue(message);
 
