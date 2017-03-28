@@ -1,59 +1,53 @@
 const bot = require('./bot');
-const {listUsers, getUsernameFromId, getSwearJar, getUserSwearCount2} = require('./users');
+const {listUsers, getUsernameFromId, getSwearJar} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
-const {getUserSwearCount} = require('./rethinkdb_gb')
+const {getUserSwearCount} = require('./rethinkdb_gb');
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
   goldenBoyStatus: 'speak',
-  startTime: 0
+  startTime: 0,
+  usernameSwears: false
 };
 
-//<<<<<<< Updated upstream
-function format_uptime(seconds){
-  function pad(s){
+function format_uptime(seconds) {
+  function pad(s) {
     return (s < 10 ? '0' : '') + s;
   }
-  var hours = Math.floor(seconds / (60*60));
-  var minutes = Math.floor(seconds % (60*60) / 60);
-  var seconds = Math.floor(seconds % 60);
+
+  const hours = Math.floor(seconds / (60 * 60));
+  const minutes = Math.floor(seconds % (60 * 60) / 60);
+  seconds = Math.floor(seconds % 60);
 
   return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
 }
 
-
-
-//=======
-function checkSwears(command, message){
-  m_text = message.text.split(':')[1];
-  if(m_text){
-    var userFound = false;
-    users = listUsers();
-    users.forEach(function(user){
-      //console.log(user.name);
-      if(m_text.indexOf(user.name) > -1){
-        userFound = true;
-        getUserSwearCount(message, user.name);
-        //bot.sendMessage(message.channel, user.name + " has sworn " + getUserSwearCount2(user.name) + " times since I last came online!");
-        }
-    
+function checkSwears(command, message) {
+  const m_text = message.text.split(':')[1];
+  if (m_text) {
+    const user = listUsers().find(user => m_text.indexOf(user.name) > -1);
+    if (user) {
+      getUserSwearCount(user.id).then((swearCount) => {
+        bot.sendMessage(message.channel, `${user.name} has sworn ${swearCount} times! Yikes!`);
       });
-    if(!userFound){
+    } else if(m_text === 'usernameSwears') {
+      traits.usernameSwears = !traits.usernameSwears;
+      bot.sendMessage(message.channel, "Username swearjar checking " + (traits.usernameSwears ? 'on' : 'off'));
+    } else {
       bot.sendMessage(message.channel, "I can't find any user in that message!");
     }
   } else {
-    swearJar = getSwearJar();
-    returnString = "";
-    swearJar.forEach(function(entry){
-      returnString.append(entry)
-      returnString.append("\n");
+    getSwearJar().then((swearJar) => {
+      let returnString = '```\nThese people are just rude...\n-----------------------------';
+      returnString += swearJar.reduce((agg, entry) => {
+        return agg + '\n' + entry;
+      }, '');
+      returnString += '\n```';
+      bot.sendMessage(message.channel, returnString);
     });
-    console.log(returnString);
-    bot.sendMessage(message.channel, returnString);
   }
 }
 
-//>>>>>>> Stashed changes
 function changeStatus(preword, message) {
   preword = preword.replace(/:/, '');
   const response = statusResponses[preword].replace(/\{status}/, traits.goldenBoyStatus).replace(/\{uptime}/, format_uptime((new Date().getTime() / 1000) - traits.startTime));

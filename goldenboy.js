@@ -25,17 +25,12 @@ const {updateUsers, getUsernameFromId} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
 const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
 const {togglReport} = require('./src/toggl');
-const {createGoldenboyIssue} = require('./src/github')
-const {hates, expressHatred} = require('./src/hates')
-const {loves, expressLove} = require('./src/loves')
-const {createRethinkUser, incrementUserSwearCount, getUserSwearCount} = require('./src/rethinkdb_gb')
-//<<<<<<< Updated upstream
-//const {robotName, traits, changeStatus, haveFunPreword} = require('./src/gb-status');
-//const {user_swears = require('./src/user-metrics')}
-//=======
+const {createGoldenboyIssue} = require('./src/github');
+const {hates, expressHatred} = require('./src/hates');
+const {loves, expressLove} = require('./src/loves');
+const {incrementUserSwearCount} = require('./src/rethinkdb_gb');
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
 const {swears} = require('./src/swears');
-//>>>>>>> Stashed changes
 
 
 function giveHelp(command, message) {
@@ -65,8 +60,9 @@ bot.use(function(message, cb) {
 
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
-      var swearCount = 0; 
+      let swearCount = 0;
 
+<<<<<<< HEAD
       swears.forEach(function(swear){
         while (swear.exec(lc_message) != null){
         swearCount = swearCount + 1;
@@ -74,15 +70,35 @@ bot.use(function(message, cb) {
         }
 
 
+=======
+      swears.forEach(function(swear) {
+        const swear_check = swear.exec(lc_message);
+        if (swear_check) {
+          console.log("detected swear");
+          swearCount = swearCount + 1;
+        }
+        const username_swear_check = swear.exec(userName);
+        if (traits.usernameSwears && username_swear_check) {
+          console.log("detected swear");
+          swearCount = swearCount + 1;
+        }
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
       });
-      if(swearCount){
-        bot.sendMessage(message.channel, "Woah! +" + swearCount.toString() + " to the swear jar for " + userName + " :poop: :skull:");
-        incrementUserSwearCount(userName, swearCount);
+
+      if (swearCount) {
+        incrementUserSwearCount(message.user, swearCount).then((res) => {
+          bot.sendMessage(message.channel, "Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:");
+        });
       }
 
       // check for hates
+<<<<<<< HEAD
       hates.forEach(function(hate){ 
         if (lc_message.indexOf(hate) > -1){
+=======
+      hates.forEach(function(hate) {
+        if (~lc_message.indexOf(hate)) {
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
           expressHatred(hate_minus_apostraphe, message);
@@ -90,8 +106,13 @@ bot.use(function(message, cb) {
       });
 
       // check for loves
+<<<<<<< HEAD
       loves.forEach(function(love){ 
         if (lc_message.indexOf(love) > -1){
+=======
+      loves.forEach(function(love) {
+        if (~lc_message.indexOf(love)) {
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
           expressLove(love_minus_apostrophe, message);
@@ -150,11 +171,19 @@ bot.use(function(message, cb) {
               console.log("executing status command");
               changeStatus(command, message);
             }
+<<<<<<< HEAD
             if (swearCommands.indexOf(command) > -1){
               console.log("executing swear command");
               checkSwears(command, message);
             }
             if (githubCommands.indexOf(command) > -1){
+=======
+            if (~swearCommands.indexOf(command)) {
+              console.log("executing swear command");
+              checkSwears(command, message);
+            }
+            if (~githubCommands.indexOf(command)) {
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
               console.log("executing github command)");
               createGoldenboyIssue(message);
 

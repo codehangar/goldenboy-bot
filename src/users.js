@@ -39,6 +39,10 @@ function getSwearJar() {
 }
 
 /*function getUserSwearCount(user){
+<<<<<<< HEAD
+=======
+
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
  return getUserSwearCount(user);
  } */
 
@@ -48,4 +52,8 @@ module.exports = {
   updateUsers,
   getUsernameFromId,
   getSwearJar
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
