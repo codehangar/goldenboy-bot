@@ -61,28 +61,16 @@ bot.use(function(message, cb) {
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
       let swearCount = 0;
-
-<<<<<<< HEAD
       swears.forEach(function(swear){
         while (swear.exec(lc_message) != null){
         swearCount = swearCount + 1;
         console.log("!");
-        }
-
-
-=======
-      swears.forEach(function(swear) {
-        const swear_check = swear.exec(lc_message);
-        if (swear_check) {
-          console.log("detected swear");
-          swearCount = swearCount + 1;
-        }
+      }
         const username_swear_check = swear.exec(userName);
         if (traits.usernameSwears && username_swear_check) {
           console.log("detected swear");
           swearCount = swearCount + 1;
         }
->>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
       });
 
       if (swearCount) {
@@ -92,13 +80,9 @@ bot.use(function(message, cb) {
       }
 
       // check for hates
-<<<<<<< HEAD
       hates.forEach(function(hate){ 
         if (lc_message.indexOf(hate) > -1){
-=======
-      hates.forEach(function(hate) {
-        if (~lc_message.indexOf(hate)) {
->>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
+
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
           expressHatred(hate_minus_apostraphe, message);
@@ -106,13 +90,9 @@ bot.use(function(message, cb) {
       });
 
       // check for loves
-<<<<<<< HEAD
       loves.forEach(function(love){ 
         if (lc_message.indexOf(love) > -1){
-=======
-      loves.forEach(function(love) {
-        if (~lc_message.indexOf(love)) {
->>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
+
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
           expressLove(love_minus_apostrophe, message);
@@ -171,19 +151,11 @@ bot.use(function(message, cb) {
               console.log("executing status command");
               changeStatus(command, message);
             }
-<<<<<<< HEAD
             if (swearCommands.indexOf(command) > -1){
               console.log("executing swear command");
               checkSwears(command, message);
             }
             if (githubCommands.indexOf(command) > -1){
-=======
-            if (~swearCommands.indexOf(command)) {
-              console.log("executing swear command");
-              checkSwears(command, message);
-            }
-            if (~githubCommands.indexOf(command)) {
->>>>>>> b7d4adc9e74589a7086df36830169dd880a69d95
               console.log("executing github command)");
               createGoldenboyIssue(message);
 
