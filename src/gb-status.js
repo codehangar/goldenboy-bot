@@ -6,7 +6,8 @@ const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
   goldenBoyStatus: 'speak',
-  startTime: 0
+  startTime: 0,
+  usernameSwears: false
 };
 
 function format_uptime(seconds) {
@@ -29,6 +30,9 @@ function checkSwears(command, message) {
       getUserSwearCount(user.id).then((swearCount) => {
         bot.sendMessage(message.channel, `${user.name} has sworn ${swearCount} times! Yikes!`);
       });
+    } else if(m_text === 'usernameSwears') {
+      traits.usernameSwears = !traits.usernameSwears;
+      bot.sendMessage(message.channel, "Username swearjar checking " + (traits.usernameSwears ? 'on' : 'off'));
     } else {
       bot.sendMessage(message.channel, "I can't find any user in that message!");
     }
