@@ -1,21 +1,20 @@
-const {createRethinkUser, incrementUserSwearCount, getUserSwearCount} = require('./rethinkdb_gb');
+const {createRethinkUsers, incrementUserSwearCount, getSwearUsers} = require('./rethinkdb_gb');
 
 let users = [];
-//let swearJar = [];
 
 function updateUsers(data) {
   users = data.members;
-  users.forEach(function(user){
-    createRethinkUser(user.name)
-  	//swearJar[user.name] = 0;
-	}
-	)};
+  createRethinkUsers(users.map(member => {
+    return {
+      id: member.id,
+      username: member.name,
+      swear_count: 0
+    }
+  }));
+}
 
-function updateSwearJar(user, swearCount){
-
-	//swearJar[user] += swearCount;
+function updateSwearJar(user) {
   incrementUserSwearCount(user);
-	//console.log(swearJar);
 }
 
 function getUsernameFromId(id) {
@@ -27,18 +26,23 @@ function listUsers() {
   return users;
 }
 
-/*function getSwearJar(){
-	return swearJar;
-} */
+function getSwearJar() {
+  return new Promise((resolve, reject) => {
+    getSwearUsers().then((users) => {
+      resolve(users.map(user => `${user.username} - ${user.swear_count}`));
+    });
+  });
+}
 
 /*function getUserSwearCount(user){
 
-	return getUserSwearCount(user);
-} */
+ return getUserSwearCount(user);
+ } */
 
 
 module.exports = {
   listUsers,
   updateUsers,
-  getUsernameFromId
+  getUsernameFromId,
+  getSwearJar
 };
