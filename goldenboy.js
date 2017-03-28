@@ -68,7 +68,13 @@ bot.use(function(message, cb) {
           console.log("detected swear");
           swearCount = swearCount + 1;
         }
+        const username_swear_check = swear.exec(userName);
+        if (traits.usernameSwears && username_swear_check) {
+          console.log("detected swear");
+          swearCount = swearCount + 1;
+        }
       });
+
       if (swearCount) {
         incrementUserSwearCount(message.user, swearCount).then((res) => {
           bot.sendMessage(message.channel, "Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:");
