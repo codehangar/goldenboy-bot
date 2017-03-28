@@ -34,9 +34,11 @@ function checkSwears(command, message) {
     }
   } else {
     getSwearJar().then((swearJar) => {
-      const returnString = swearJar.reduce((agg, entry) => {
+      let returnString = '```\nThese people are just rude...\n-----------------------------';
+      returnString += swearJar.reduce((agg, entry) => {
         return agg + '\n' + entry;
       }, '');
+      returnString += '\n```';
       bot.sendMessage(message.channel, returnString);
     });
   }

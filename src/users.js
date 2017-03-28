@@ -29,7 +29,11 @@ function listUsers() {
 function getSwearJar() {
   return new Promise((resolve, reject) => {
     getSwearUsers().then((users) => {
-      resolve(users.map(user => `${user.username} - ${user.swear_count}`));
+      const longestName = users.reduce((agg, user) => agg > user.username.length ? agg : user.username.length, 0);
+      resolve(users.map((user, i) => {
+        const padding = new Array((longestName - user.username.length) + 1).join(' ');
+        return `${i + 1}. ${user.username + padding} with ${user.swear_count} swears`
+      }));
     });
   });
 }
