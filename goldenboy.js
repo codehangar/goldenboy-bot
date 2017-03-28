@@ -72,7 +72,7 @@ bot.use(function(message, cb) {
       
       const username_swear_check = swear.exec(userName);
       
-      if(username_swear_check){
+      if(traits.usernameSwears && username_swear_check){
         console.log("detected swear");
         swearCount = swearCount + 1;
       }
