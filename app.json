@@ -1,0 +1,41 @@
+{
+  "name": "goldenboy-bot",
+  "description": "Code Hangar's goldenboy",
+  "repository": "https://github.com/codehangar/goldenboy-bot",
+  "logo": "http://goldenboy-bot.herokuapp.com/goldenboy.jpg",
+  "keywords": [
+    "node",
+    "slack",
+    "chatbot",
+    "express",
+    "static",
+    "rethinkdb"
+  ],
+  "success_url": "/",
+  "env": {
+    "BOT_KEY": {
+      "description": "A secret key used by Slack to authenticate the slack bot"
+    },
+    "TRELLO_KEY": {
+      "description": "API Key for Trello Integration"
+    },
+    "TRELLO_TOKEN": {
+      "description": "API Token for Trello Integration"
+    },
+    "TOGGL_TOKEN": {
+      "description": "API Token for Toggl Integration"
+    },
+    "TOGGL_USER_AGENT": {
+      "description": "API User for Toggl Integration (your account's email)"
+    },
+    "TOGGL_WORKSPACE": {
+      "description": "Toggl Workspace ID"
+    },
+    "RETHINK_HOST": {
+      "description": "Hostname or IP of your RethinkDB instance"
+    },
+    "RETHINK_PORT": {
+      "description": "Port of your RethinkDB instance"
+    }
+  }
+}
