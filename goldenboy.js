@@ -59,8 +59,7 @@ bot.use(function(message, cb) {
     const userName = getUsernameFromId(message.user);
 
     console.log(userName + ' said: ' + message.text);
-    if (userName !== robotName) {
-      let swearCount = 0;
+    let swearCount = 0;
       swears.forEach(function(swear){
         while (swear.exec(lc_message) != null){
         swearCount = swearCount + 1;
@@ -78,6 +77,8 @@ bot.use(function(message, cb) {
           bot.sendMessage(message.channel, "Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:");
         });
       }
+    if (userName !== robotName) {
+      
 
       // check for hates
       hates.forEach(function(hate){ 
