@@ -3,11 +3,6 @@ const bot = require('./bot');
 const loves = ["gold", "golds", "gold\'s", "father", "fathers", "father\'s", "cookie", "cookies", "cookie\'s", "communism", "la croix"];
 
 const loveResponses =  {
-  "gold" : [
-    "Gold! My essence! I must become pure!",
-    "My father, the Great Gold Grabber, is in jail for life for grabbing too much gold! I never knew him!"
-  ],
-
   "father" : [
     "I have three fathers! maxjackson, The Great Gold Grabber, and God!",
     "Fathers are the most oppressed minority in America today! Nobody talks about this!"
