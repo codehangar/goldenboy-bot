@@ -1,5 +1,5 @@
 const r = require('rethinkdb');
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 const connectionInfo = {
   host: process.env.RETHINK_HOST,
   port: process.env.RETHINK_PORT,

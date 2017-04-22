@@ -1,4 +1,4 @@
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 const {listUsers, getUsernameFromId, getSwearJar} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
 const {getUserSwearCount} = require('./rethinkdb_gb');
@@ -28,13 +28,13 @@ function checkSwears(command, message) {
     const user = listUsers().find(user => m_text.indexOf(user.name) > -1);
     if (user) {
       getUserSwearCount(user.id).then((swearCount) => {
-        bot.sendMessage(message.channel, `${user.name} has sworn ${swearCount} times! Yikes!`);
+        rtm.sendMessage(`${user.name} has sworn ${swearCount} times! Yikes!`, message.channel);
       });
     } else if(m_text === 'usernameSwears') {
       traits.usernameSwears = !traits.usernameSwears;
-      bot.sendMessage(message.channel, "Username swearjar checking " + (traits.usernameSwears ? 'on' : 'off'));
+      rtm.sendMessage("Username swearjar checking " + (traits.usernameSwears ? 'on' : 'off'), message.channel);
     } else {
-      bot.sendMessage(message.channel, "I can't find any user in that message!");
+      rtm.sendMessage("I can't find any user in that message!", message.channel);
     }
   } else {
     getSwearJar().then((swearJar) => {
@@ -43,7 +43,7 @@ function checkSwears(command, message) {
         return agg + '\n' + entry;
       }, '');
       returnString += '\n```';
-      bot.sendMessage(message.channel, returnString);
+      rtm.sendMessage(returnString, message.channel);
     });
   }
 }
@@ -63,7 +63,7 @@ function changeStatus(preword, message) {
       break;
   }
   console.log('changeStatus', preword); // eslint-disable-line no-console
-  bot.sendMessage(message.channel, response);
+  rtm.sendMessage(response, message.channel);
 }
 
 function haveFunPreword(preword, message) {
@@ -94,8 +94,8 @@ function haveFunPreword(preword, message) {
       break;
   }
 
-  bot.sendMessage(message.channel, response);
-  bot.sendMessage(message.channel, "goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.");
+  rtm.sendMessage(response, message.channel);
+  rtm.sendMessage("goldenboy Self Esteem levels: " + traits.goldenBoyEsteem + " %.", message.channel);
 }
 
 function getEsteemLevel() {

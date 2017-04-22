@@ -2,6 +2,7 @@ let channels = [];
 let ims = []
 
 function updateChannels(data) {
+  console.log(data)
   channels = data.channels;
 }
 

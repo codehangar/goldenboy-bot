@@ -1,4 +1,4 @@
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 
 const loves = ["gold", "golds", "gold\'s", "father", "fathers", "father\'s", "cookie", "cookies", "cookie\'s", "communism", "la croix"];
 
@@ -33,7 +33,7 @@ const loveResponses =  {
 function expressLove(love, message){
   console.log(love);
 	const resArray = loveResponses[love];
-	bot.sendMessage(message.channel, resArray[getRandomInt(0, resArray.length)]);
+	rtm.sendMessage(resArray[getRandomInt(0, resArray.length)], message.channel);
 }
 
 function getRandomInt(min, max) {
