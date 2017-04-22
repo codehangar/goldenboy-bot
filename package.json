@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/codehangar/goldenboy-bot#readme",
   "dependencies": {
+    "@slack/client": "^3.9.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.0",
     "express-handlebars": "^3.0.0",

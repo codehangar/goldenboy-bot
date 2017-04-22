@@ -1,7 +1,7 @@
 const TogglClient = require('toggl-api');
 const toggl = new TogglClient({apiToken: process.env.TOGGL_TOKEN});
 const moment = require('moment');
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 
 function togglReport(messageText, messageChannel) {
   const periods = ['w', 'm'];
@@ -15,15 +15,15 @@ function togglReport(messageText, messageChannel) {
 
 
   if (text.indexOf('help') > 0){
-    bot.sendMessage(messageChannel, helpMessage);
+    rtm.sendMessage(helpMessage, messageChannel);
   } else if (text.indexOf('clients') > 0){
     clientsMessage = "Clients: " + message_clients.join(" ");
-    bot.sendMessage(messageChannel, clientsMessage);
+    rtm.sendMessage(clientsMessage, messageChannel);
   } else if (text.indexOf('periods') > 0){
     periodsMessage = "Periods: " + periods.join(" ");
-    bot.sendMessage(messageChannel, periodsMessage);
+    rtm.sendMessage(periodsMessage, messageChannel);
   } else if (text.length == 0){
-    bot.sendMessage(messageChannel, helpMessage);
+    rtm.sendMessage(helpMessage, messageChannel);
 
   } else  { 
     console.log("generating toggl report")
@@ -43,7 +43,7 @@ function togglReport(messageText, messageChannel) {
     }, (err, res) => {
       const time = secondsToHours(res.total_grand / 1000);
       const url = `https://www.toggl.com/app/reports/summary/${process.env.TOGGL_WORKSPACE}/period/${periodName}/clients/${client_ids}/billable/both`;
-      bot.sendMessage(messageChannel, `*${time}* spent on *${clientName}* _${periodName}_\n${url}`);
+      rtm.sendMessage(`*${time}* spent on *${clientName}* _${periodName}_\n${url}`, messageChannel);
     });
   }
 }

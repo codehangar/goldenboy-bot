@@ -23,7 +23,8 @@ const swears = [
   /d+a+m+n+i+t+/ig,
   /h+o+l+y+/ig,
   /b+i+t+c+h+e+s/ig,
-  /g+od+/ig
+  /g+od+/ig,
+  /aaron blankenship/
 ];
 module.exports = {
   swears
