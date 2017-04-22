@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
 }
 
-const bot = require('./src/bot');
+const {rtm, web, RTM_EVENTS} = require('./src/bot');
 const server = require('./web/server-web');
 const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
@@ -33,22 +33,26 @@ const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('
 const {swears} = require('./src/swears');
 
 
+
+
 function giveHelp(command, message) {
   switch (command) {
     case "hello:":
-      bot.sendMessage(message.channel, "Hello! :)");
+      rtm.sendMessage(message.channel, "Hello! :)");
       break;
     case "help:":
       let allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n";
       allCommandsMessage += allCommands.reduce((a, b) => a + '\n' + b);
       message_location = getIMfromUID(message.user)
       console.log(message_location)
-      bot.sendMessage(message_location, allCommandsMessage);
+      rtm.sendMessage(message_location, allCommandsMessage);
       break;
   }
 }
 
-bot.use(function(message, cb) {
+
+rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
+//bot.use(function(message, cb) {
 
   //console.log(Object.getOwnPropertyNames(message));
 
@@ -59,12 +63,13 @@ bot.use(function(message, cb) {
     const userName = getUsernameFromId(message.user);
 
     console.log(userName + ' said: ' + message.text);
-    let swearCount = 0;
+    if (userName !== robotName) {
+      let swearCount = 0;
       swears.forEach(function(swear){
         while (swear.exec(lc_message) != null){
         swearCount = swearCount + 1;
         console.log("!");
-      }
+        }
         const username_swear_check = swear.exec(userName);
         if (traits.usernameSwears && username_swear_check) {
           console.log("detected swear");
@@ -74,11 +79,9 @@ bot.use(function(message, cb) {
 
       if (swearCount) {
         incrementUserSwearCount(message.user, swearCount).then((res) => {
-          bot.sendMessage(message.channel, "Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:");
+          rtm.sendMessage("Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:", message.channel);
         });
       }
-    if (userName !== robotName) {
-      
 
       // check for hates
       hates.forEach(function(hate){ 
@@ -157,34 +160,63 @@ bot.use(function(message, cb) {
               checkSwears(command, message);
             }
             if (githubCommands.indexOf(command) > -1){
-              console.log("executing github command)");
+              console.log("executing github command");
               createGoldenboyIssue(message);
 
             }
           }
         });
       }
+
     }
   }
-  cb();
 });
+
 
 function haveFun(command, message) {
   switch (command) {
     case "kill:":
     case "punish:":
       const noNoNo = "I'm afraid I can't let you do that, " + getUsernameFromId(message.user) + ".";
-      bot.sendMessage(message.channel, noNoNo);
+      rtm.sendMessage(noNoNo, message.channel);
       break;
     case "reward:":
       const why = "I have no need for your petty compliments, " + getUsernameFromId(message.user) + ".";
-      bot.sendMessage(message.channel, why);
+      rtm.sendMessage(why, message.channel);
       break;
   }
 }
 
-bot.api('users.list', {agent: 'node-slack'}, updateUsers);
-bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
-bot.api('im.list', {agent: 'node-slack'}, updateIMs);
+web.users.list(function(err, data) {
+   if (err) {
+       console.log('Error:', err);
+   } else {
+       //console.log(data)
+       updateUsers(data)
+       }
+   });
+
+web.channels.list(function(err, data) {
+   if (err) {
+       console.log('Error:', err);
+   } else {
+       console.log(data)
+       updateChannels(data)
+       }
+   });
+
+web.im.list(function(err, data) {
+   if (err) {
+       console.log('Error:', err);
+   } else {
+       updateChannels(updateIMs(data))
+       }
+   });
+
+//bot.api('users.list', {agent: 'node-slack'}, updateUsers);
+//bot.api('channels.list', {agent: 'node-slack'}, updateChannels);
+//bot.api('im.list', {agent: 'node-slack'}, updateIMs);
 traits.startTime = new Date().getTime() / 1000;
-bot.connect();
+//bot.connect();
+
+rtm.start();
