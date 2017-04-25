@@ -1,6 +1,6 @@
 const GitHubApi = require("github");
 const githubToken = process.env.GITHUB_TOKEN;
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 
 
 
@@ -43,7 +43,7 @@ function createGoldenboyIssue(message){
     })
 
     responseMessage = "Created new github issue with title \"" + issue_title + "\""
-    bot.sendMessage(message.channel, responseMessage)
+    rtm.sendMessage(responseMessage, message.channel)
 }
 
 module.exports = {

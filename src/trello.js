@@ -3,7 +3,7 @@ const Trello = require("node-trello");
 const trelloKey = process.env.TRELLO_KEY;
 const trelloToken = process.env.TRELLO_TOKEN;
 const trello = new Trello(trelloKey, trelloToken);
-const bot = require('./bot');
+const {rtm, web} = require('./bot');
 
 let meetingNotesMaster = [];
 
@@ -37,7 +37,7 @@ function getMeetingNotes(boardTitle, listTitle, cardTitle) {
 
 function printMeetingNotes(messageChannel, boardTitle, listTitle, cardTitle) {
   getMeetingNotes(boardTitle, listTitle, cardTitle).then(card => {
-    bot.sendMessage(messageChannel, card.desc);
+    rtm.sendMessage(card.desc, messageChannel);
   });
 }
 
@@ -88,7 +88,7 @@ function updateMeetingNotes(command, messageText, messageChannel, messageUser) {
   if (command == 'print meeting notes:') {
     printMeetingNotes(messageChannel, boardTitle, listTitle, cardTitle);
   } else {
-    bot.sendMessage(messageChannel, "I'll add that to the notes!");
+    rtm.sendMessage("I'll add that to the notes!", messageChannel);
     const writeText = messageText.split(':')[1];
     const meetingNote = {
       tag: command,
@@ -128,7 +128,7 @@ function updateTrello(messageChannel, cardList, cardTitle, content) {
   console.log("Writing to list:");
   console.log(cardList);
   const responseText = `I'll add that to the ${cardTitle} card in the ${cardList} list.`;
-  bot.sendMessage(messageChannel, responseText);
+  rtm.sendMessage(responseText, messageChannel);
 
   console.log(responseText);
 
