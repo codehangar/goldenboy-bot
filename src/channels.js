@@ -1,19 +1,20 @@
 let channels = [];
-let ims = []
+let ims = [];
 
 function updateChannels(data) {
-  console.log(data)
-  channels = data.channels;
+  if (data && data.channels) {
+    channels = data.channels;
+    console.log('channels.length', channels.length); // eslint-disable-line no-console
+  }
 }
 
 function updateIMs(data) {
-	ims = data.ims;
+  ims = data.ims;
 }
 
 function getIMfromUID(uid) {
-	console.log(uid);
-	const im = ims.find(im => im.user === uid);
-	return im ? im.id : "unknown IM channel";
+  const im = ims.find(im => im.user === uid);
+  return im ? im.id : "unknown IM channel";
 }
 
 function getChannelFromId(id) {

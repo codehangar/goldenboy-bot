@@ -33,19 +33,16 @@ const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('
 const {swears} = require('./src/swears');
 
 
-
-
 function giveHelp(command, message) {
   switch (command) {
     case "hello:":
-      rtm.sendMessage(message.channel, "Hello! :)");
+      rtm.sendMessage("Hello! :)", message.channel);
       break;
     case "help:":
       let allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n";
       allCommandsMessage += allCommands.reduce((a, b) => a + '\n' + b);
-      message_location = getIMfromUID(message.user)
-      console.log(message_location)
-      rtm.sendMessage(message_location, allCommandsMessage);
+      const message_location = getIMfromUID(message.user);
+      rtm.sendMessage(allCommandsMessage, message_location);
       break;
   }
 }
@@ -65,15 +62,13 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
       let swearCount = 0;
-      swears.forEach(function(swear){
-        while (swear.exec(lc_message) != null){
-        swearCount = swearCount + 1;
-        console.log("!");
+      swears.forEach(function(swear) {
+        while (swear.exec(lc_message) !== null) {
+          swearCount++;
         }
         const username_swear_check = swear.exec(userName);
         if (traits.usernameSwears && username_swear_check) {
-          console.log("detected swear");
-          swearCount = swearCount + 1;
+          swearCount++;
         }
       });
 
@@ -84,8 +79,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       }
 
       // check for hates
-      hates.forEach(function(hate){ 
-        if (lc_message.indexOf(hate) > -1){
+      hates.forEach(function(hate) {
+        if (lc_message.indexOf(hate) > -1) {
 
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
@@ -94,8 +89,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       });
 
       // check for loves
-      loves.forEach(function(love){ 
-        if (lc_message.indexOf(love) > -1){
+      loves.forEach(function(love) {
+        if (lc_message.indexOf(love) > -1) {
 
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
@@ -155,11 +150,11 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
               console.log("executing status command");
               changeStatus(command, message);
             }
-            if (swearCommands.indexOf(command) > -1){
+            if (swearCommands.indexOf(command) > -1) {
               console.log("executing swear command");
               checkSwears(command, message);
             }
-            if (githubCommands.indexOf(command) > -1){
+            if (githubCommands.indexOf(command) > -1) {
               console.log("executing github command");
               createGoldenboyIssue(message);
 
@@ -188,30 +183,30 @@ function haveFun(command, message) {
 }
 
 web.users.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       //console.log(data)
-       updateUsers(data)
-       }
-   });
+  if (err) {
+    console.error('web.users.list Error:', err);
+  } else {
+    //console.log(data)
+    updateUsers(data)
+  }
+});
 
 web.channels.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       console.log(data)
-       updateChannels(data)
-       }
-   });
+  if (err) {
+    console.error('web.channels.list Error:', err);
+  } else {
+    // console.log(data)
+    updateChannels(data)
+  }
+});
 
 web.im.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       updateChannels(updateIMs(data))
-       }
-   });
+  if (err) {
+    console.error('web.im.list Error:', err);
+  } else {
+    updateChannels(updateIMs(data))
+  }
+});
 
 //bot.api('users.list', {agent: 'node-slack'}, updateUsers);
 //bot.api('channels.list', {agent: 'node-slack'}, updateChannels);

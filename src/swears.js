@@ -24,7 +24,7 @@ const swears = [
   /h+o+l+y+/ig,
   /b+i+t+c+h+e+s/ig,
   /g+od+/ig,
-  /aaron blankenship/
+  /aaron blankenship/ig
 ];
 module.exports = {
   swears
