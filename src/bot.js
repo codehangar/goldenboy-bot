@@ -1,4 +1,3 @@
-//const slackbot = require('node-slackbot');
 
 var RtmClient = require('@slack/client').RtmClient;
 var WebClient = require('@slack/client').WebClient;
@@ -7,9 +6,5 @@ var bot_token = process.env.BOT_KEY || '';
 
 var rtm = new RtmClient(bot_token);
 var web = new WebClient(bot_token);
-//rtm.start();
-
-//const botKey = process.env.BOT_KEY;
-//const bot = new slackbot(botKey);
 
 module.exports = {rtm, web, RTM_EVENTS};

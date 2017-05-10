@@ -17,18 +17,27 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config();
 }
 
+const {allIntegrationsValid} = require('./src/integrations')
+
+if(allIntegrationsValid){
+
+  var {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
+  var {togglReport} = require('./src/toggl');
+  var {createGoldenboyIssue} = require('./src/github');
+  var {incrementUserSwearCount} = require('./src/rethinkdb_gb');
+}
+
+
 const {rtm, web, RTM_EVENTS} = require('./src/bot');
 const server = require('./web/server-web');
 const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
-const {updateUsers, getUsernameFromId} = require('./src/users');
+const {updateUsers, getUsernameFromId, updateSwearJar} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
-const {updateMeetingNotes, getCardListFromCommand, updateTrello} = require('./src/trello');
-const {togglReport} = require('./src/toggl');
-const {createGoldenboyIssue} = require('./src/github');
+
+
 const {hates, expressHatred} = require('./src/hates');
 const {loves, expressLove} = require('./src/loves');
-const {incrementUserSwearCount} = require('./src/rethinkdb_gb');
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
 const {swears} = require('./src/swears');
 
@@ -38,7 +47,7 @@ const {swears} = require('./src/swears');
 function giveHelp(command, message) {
   switch (command) {
     case "hello:":
-      rtm.sendMessage(message.channel, "Hello! :)");
+      rtm.sendMessage("Hello! :)", message.channel);
       break;
     case "help:":
       let allCommandsMessage = "I am Golden Boy! Here are all the things you can tell me to do. \n";
@@ -46,6 +55,8 @@ function giveHelp(command, message) {
       message_location = getIMfromUID(message.user)
       console.log(message_location)
       rtm.sendMessage(message_location, allCommandsMessage);
+      const message_location = getIMfromUID(message.user);
+      rtm.sendMessage(allCommandsMessage, message_location);
       break;
   }
 }
@@ -65,27 +76,31 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
     console.log(userName + ' said: ' + message.text);
     if (userName !== robotName) {
       let swearCount = 0;
-      swears.forEach(function(swear){
-        while (swear.exec(lc_message) != null){
-        swearCount = swearCount + 1;
-        console.log("!");
+      swears.forEach(function(swear) {
+        while (swear.exec(lc_message) !== null) {
+          swearCount++;
         }
         const username_swear_check = swear.exec(userName);
         if (traits.usernameSwears && username_swear_check) {
-          console.log("detected swear");
-          swearCount = swearCount + 1;
+          swearCount++;
         }
       });
 
       if (swearCount) {
-        incrementUserSwearCount(message.user, swearCount).then((res) => {
+        if(allIntegrationsValid){
+          incrementUserSwearCount(message.user, swearCount).then((res) => {
+            rtm.sendMessage("Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:", message.channel);
+          });
+        } else {
+          updateSwearJar(message.user, swearCount);
+          console.log("updating swearz")
           rtm.sendMessage("Woah! +" + swearCount + " to the swear jar for " + userName + " :poop: :skull:", message.channel);
-        });
+        }
       }
 
       // check for hates
-      hates.forEach(function(hate){ 
-        if (lc_message.indexOf(hate) > -1){
+      hates.forEach(function(hate) {
+        if (lc_message.indexOf(hate) > -1) {
 
           const hate_minus_s = (hate.endsWith("s") ? hate.substring(0, hate.length - 1) : hate);
           const hate_minus_apostraphe = (hate_minus_s.endsWith("\'") ? hate_minus_s.substring(0, hate_minus_s.length - 1) : hate_minus_s)
@@ -94,8 +109,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       });
 
       // check for loves
-      loves.forEach(function(love){ 
-        if (lc_message.indexOf(love) > -1){
+      loves.forEach(function(love) {
+        if (lc_message.indexOf(love) > -1) {
 
           const love_minus_s = (love.endsWith("s") ? love.substring(0, love.length - 1) : love);
           const love_minus_apostrophe = (love_minus_s.endsWith("\'") ? love_minus_s.substring(0, love_minus_s.length - 1) : love_minus_s)
@@ -135,13 +150,19 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
               const cardList = getCardListFromCommand(command);
               updateTrello(message.channel, cardList, cardTitle, {cardComment});
             }
-            if (togglCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
-              console.log("executing toggl command");
-              togglReport(message.text, message.channel);
-            }
-            if (noteCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
-              console.log("executing meeting note command");
-              updateMeetingNotes(command, message.text, message.channel, userName);
+            if(allIntegrationsValid){
+              if (togglCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
+                console.log("executing toggl command");
+                togglReport(message.text, message.channel);
+              }
+              if (noteCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
+                console.log("executing meeting note command");
+                updateMeetingNotes(command, message.text, message.channel, userName);
+              }
+              if (githubCommands.indexOf(command) > -1) {
+                console.log("executing github command");
+                screateGoldenboyIssue(message);
+              }
             }
             if (helpCommands.indexOf(command) > -1 && traits.goldenBoyStatus != 'sleep') {
               console.log("executing help command");
@@ -155,15 +176,11 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
               console.log("executing status command");
               changeStatus(command, message);
             }
-            if (swearCommands.indexOf(command) > -1){
+            if (swearCommands.indexOf(command) > -1) {
               console.log("executing swear command");
               checkSwears(command, message);
             }
-            if (githubCommands.indexOf(command) > -1){
-              console.log("executing github command");
-              createGoldenboyIssue(message);
-
-            }
+            
           }
         });
       }
@@ -188,30 +205,30 @@ function haveFun(command, message) {
 }
 
 web.users.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       //console.log(data)
-       updateUsers(data)
-       }
-   });
+  if (err) {
+    console.error('web.users.list Error:', err);
+  } else {
+    //console.log(data)
+    updateUsers(data)
+  }
+});
 
 web.channels.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       console.log(data)
-       updateChannels(data)
-       }
-   });
+  if (err) {
+    console.error('web.channels.list Error:', err);
+  } else {
+    // console.log(data)
+    updateChannels(data)
+  }
+});
 
 web.im.list(function(err, data) {
-   if (err) {
-       console.log('Error:', err);
-   } else {
-       updateChannels(updateIMs(data))
-       }
-   });
+  if (err) {
+    console.error('web.im.list Error:', err);
+  } else {
+    updateChannels(updateIMs(data))
+  }
+});
 
 //bot.api('users.list', {agent: 'node-slack'}, updateUsers);
 //bot.api('channels.list', {agent: 'node-slack'}, updateChannels);

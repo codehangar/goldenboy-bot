@@ -1,7 +1,10 @@
 const {rtm, web} = require('./bot');
-const {listUsers, getUsernameFromId, getSwearJar} = require('./users');
+const {listUsers, getUsernameFromId, getSwearJar, getSwearJarUser} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
-const {getUserSwearCount} = require('./rethinkdb_gb');
+const {allIntegrationsValid} = require('./integrations');
+if(allIntegrationsValid){
+  var {getUserSwearCount} = require('./rethinkdb_gb');
+}
 const robotName = "goldenboy";
 const traits = {
   goldenBoyEsteem: 75,
@@ -27,9 +30,11 @@ function checkSwears(command, message) {
   if (m_text) {
     const user = listUsers().find(user => m_text.indexOf(user.name) > -1);
     if (user) {
-      getUserSwearCount(user.id).then((swearCount) => {
-        rtm.sendMessage(`${user.name} has sworn ${swearCount} times! Yikes!`, message.channel);
-      });
+      if(allIntegrationsValid){
+        getUserSwearCount(user.id).then((swearCount) => {
+          rtm.sendMessage(`${user.name} has sworn ${swearCount} times! Yikes!`, message.channel);
+        });
+      }
     } else if(m_text === 'usernameSwears') {
       traits.usernameSwears = !traits.usernameSwears;
       rtm.sendMessage("Username swearjar checking " + (traits.usernameSwears ? 'on' : 'off'), message.channel);
@@ -37,14 +42,26 @@ function checkSwears(command, message) {
       rtm.sendMessage("I can't find any user in that message!", message.channel);
     }
   } else {
-    getSwearJar().then((swearJar) => {
-      let returnString = '```\nThese people are just rude...\n-----------------------------';
-      returnString += swearJar.reduce((agg, entry) => {
-        return agg + '\n' + entry;
-      }, '');
-      returnString += '\n```';
+    if(allIntegrationsValid){
+      getSwearJar().then((swearJar) => {
+        let returnString = '```\nThese people are just rude...\n-----------------------------';
+        returnString += swearJar.reduce((agg, entry) => {
+          return agg + '\n' + entry;
+        }, '');
+        returnString += '\n```';
+        rtm.sendMessage(returnString, message.channel);
+      });
+    } else {
+      swearJar = getSwearJar();
+      let returnString = '```\nThese people are just rude...\n-----------------------------\n';
+      for(var swearUser in swearJar){
+        if(swearJar[swearUser] > 0){
+          returnString += swearUser + ": " + swearJar[swearUser] + " swears\n"
+        }
+      }
+      returnString += '\n```'
       rtm.sendMessage(returnString, message.channel);
-    });
+    }
   }
 }
 
