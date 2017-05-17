@@ -3,7 +3,7 @@ let ims = [];
 
 function updateChannels(data) {
   //console.log(data)
-  channels = data.channels;
+  //channels = data.channels;
   if (data && data.channels) {
     channels = data.channels;
     console.log('channels.length', channels.length); // eslint-disable-line no-console
