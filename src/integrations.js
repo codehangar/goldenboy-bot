@@ -1,4 +1,4 @@
-let integrationsValid = {}
+let integrationsValid = {};
 
 
 try {

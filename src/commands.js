@@ -12,13 +12,13 @@ const mimicCommands = ['mimic:'];
 
 let allCommands = funCommands.concat(swearCommands).concat(statusCommands).concat(helpCommands).concat(mimicCommands);
 
-if (integrationsValid['trello']) {
+if (integrationsValid.trello) {
     allCommands = allCommands.concat(noteCommands).concat(trelloCommands);
 }
-if (integrationsValid['toggl']) {
+if (integrationsValid.toggl) {
     allCommands = allCommands.concat(togglCommands);
 }
-if (integrationsValid['github']){
+if (integrationsValid.github){
     allCommands = allCommands.concat(githubCommands);
 }
 
