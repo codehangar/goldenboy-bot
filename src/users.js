@@ -29,6 +29,11 @@ function updateSwearJar(id, swearCount) {
   swearJar[getUsernameFromId(id)] += swearCount;
 }
 
+function getIdFromUsername(username) {
+	const user = users.find(user => user.username === username);
+	return user ? user.id : '0';
+}
+
 function getUsernameFromId(id) {
   const user = users.find(user => user.id === id);
   return user ? user.name : "unknown member";
@@ -73,5 +78,6 @@ module.exports = {
   getUsernameFromId,
   getSwearJar, 
   updateSwearJar,
-  getSwearJarUser
+  getSwearJarUser,
+  getIdFromUsername
 };
