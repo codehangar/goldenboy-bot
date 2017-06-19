@@ -1,41 +1,40 @@
 let integrationsValid = {};
 
 
-try {
-    console.log("Trying trello");
-    const Trello = require("node-trello");
-    integrationsValid["trello"] = (process.env.TRELLO_KEY != null && process.env.TRELLO_TOKEN != null);
+try {  
+    const _ = require('node-trello');// eslint-disable-line no-unused-vars 
+    integrationsValid['trello'] = (process.env.TRELLO_KEY != null && process.env.TRELLO_TOKEN != null);// eslint-disable-line no-undef
 }   catch(err){
-    integrationsValid["trello"] = false;
+    integrationsValid['trello'] = false;
 }
 
 
 try {
-    const Trello = require("github");
-    integrationsValid["github"] = (process.env.GITHUB_TOKEN != null);
+    const _ = require('github');// eslint-disable-line no-unused-vars 
+    integrationsValid['github'] = (process.env.GITHUB_TOKEN != null);// eslint-disable-line no-undef
 }   catch(err){
-    integrationsValid["github"] = false;
+    integrationsValid['github'] = false;
 }
 try {
-    const Toggl = require("toggl-api");
-    integrationsValid["toggl"] = (process.env.TOGGL_TOKEN != null);
+    const _ = require('toggl-api');// eslint-disable-line no-unused-vars 
+    integrationsValid['toggl'] = (process.env.TOGGL_TOKEN != null);// eslint-disable-line no-undef 
 }   catch(err){
-    integrationsValid["toggl"] = false;
+    integrationsValid['toggl'] = false;
 }
 
 try {
-    const moment = require("moment");
-    integrationsValid["moment"] = true
+    const _ = require('moment'); // eslint-disable-line no-unused-vars 
+    integrationsValid['moment'] = true;
 }   catch(err){
-    integrationsValid["moment"] = false;
+    integrationsValid['moment'] = false;
 }
 
 try {
-    const r = require("rethinkdb");
-    integrationsValid["rethinkdb"] = (process.env.RETHINK_HOST != null && process.env.RETHINK_PORT != null);
+    const _ = require('rethinkdb');// eslint-disable-line no-unused-vars 
+    integrationsValid['rethinkdb'] = (process.env.RETHINK_HOST != null && process.env.RETHINK_PORT != null);// eslint-disable-line no-undef
 }   catch(err){
-    integrationsValid["rethinkdb"] = false;
+    integrationsValid['rethinkdb'] = false;
 }
 
-console.log(integrationsValid);
-module.exports = {integrationsValid}
+console.log('integrationsValid', integrationsValid); // eslint-disable-line no-console
+module.exports = {integrationsValid};
