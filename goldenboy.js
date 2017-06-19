@@ -82,29 +82,30 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
         const userName = getUsernameFromId(message.user);
 
         console.log(userName + ' said: ' + message.text); // eslint-disable-line no-console
-        if (userName != robotName) {
-            let swearCount = 0;
-            swears.forEach(function(swear) {
-                while (swear.exec(lc_message) != null) {
-                    swearCount++;
-                }
-                const username_swear_check = swear.exec(userName);
-                if (traits.usernameSwears && username_swear_check) {
-                    swearCount++;
-                }
-            });
-
-            if (swearCount) {
-                if(integrationsValid.rethinkdb){
-                    incrementUserSwearCount(message.user, swearCount).then((res) => {
-                        rtm.sendMessage('Woah! +' + swearCount + ' to the swear jar for ' + userName + ' :poop: :skull:', message.channel);
-                    });
-                } else {
-                    updateSwearJar(message.user, swearCount);
-                    console.log('updating swearz'); // eslint-disable-line no-console
-                    rtm.sendMessage('Woah! +' + swearCount + ' to the swear jar for ' + userName + ' :poop: :skull:', message.channel);
-                }
+        let swearCount = 0;
+        swears.forEach(function(swear) {
+            while (swear.exec(lc_message) != null) {
+                swearCount++;
             }
+            const username_swear_check = swear.exec(userName);
+            if (traits.usernameSwears && username_swear_check) {
+                swearCount++;
+            }
+        });
+
+        if (swearCount) {
+            if(integrationsValid.rethinkdb){
+                incrementUserSwearCount(message.user, swearCount).then((res) => {
+                    rtm.sendMessage('Woah! +' + swearCount + ' to the swear jar for ' + userName + ' :poop: :skull:', message.channel);
+                });
+            } else {
+                updateSwearJar(message.user, swearCount);
+                console.log('updating swearz'); // eslint-disable-line no-console
+                rtm.sendMessage('Woah! +' + swearCount + ' to the swear jar for ' + userName + ' :poop: :skull:', message.channel);
+            }
+        }
+        if (userName != robotName) {
+            
 
             // check for hates
             hates.forEach(function(hate) {
