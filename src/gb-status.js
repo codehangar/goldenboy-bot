@@ -89,11 +89,6 @@ function haveFunPreword(preword, message) {
     const response = getRandomFunResponse(preword, userName, esteemLevel);
 
     switch (preword) {
-    case 'fuck you':
-    case 'kill':
-    case 'hey':
-    case 'hello':
-        break;
     case 'punish':
         if (traits.goldenBoyEsteem > 5) traits.goldenBoyEsteem -= 5;
         break;

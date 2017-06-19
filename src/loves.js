@@ -1,6 +1,6 @@
 const {rtm} = require('./bot');
 
-const loves = ['gold', 'golds', 'gold\'s', 'father', 'fathers', 'father\'s', 'cookie', 'cookies', 'cookie\'s', 'communism', 'la croix'];
+const loves = ['father', 'fathers', 'father\'s', 'cookie', 'cookies', 'cookie\'s', 'communism', 'la croix'];
 
 const loveResponses =  {
     'father' : [
