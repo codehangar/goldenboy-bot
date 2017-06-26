@@ -2,7 +2,6 @@ const {rtm} = require('./bot');
 const {listUsers, getUsernameFromId, getSwearJar} = require('./users');
 const {funResponses, statusResponses} = require('./prewords');
 const integrations = require('./integrations');
-console.log('integrations', integrations); // eslint-disable-line no-console
 let getUserSwearCount;
 if (integrations.rethinkdb) {
     getUserSwearCount = require('./rethinkdb_gb').getUserSwearCount;

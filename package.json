@@ -8,7 +8,8 @@
     "dev": "NODE_ENV=development nodemon goldenboy",
     "test": "eslint . && mocha",
     "eslint": "eslint .",
-    "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
+    "coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "view-coverage": "node server-coverage"
   },
   "repository": {
     "type": "git",

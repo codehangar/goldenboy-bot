@@ -8,8 +8,8 @@
     "Promise": true,
     "expect": true,
     "sinon": true,
-    "__DEV__": true,
-    "ll": true
+    "mockery": true,
+//    "__DEV__": true,
   },
   "parserOptions": {
     "ecmaVersion": 6,

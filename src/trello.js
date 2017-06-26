@@ -140,6 +140,8 @@ function updateMeetingNotes(command, messageText, messageChannel, messageUser) {
     // const writeMessage = messageText.split(command)[1];
 }
 module.exports = {
+    noteToString,
+    parseMeetingNoteItems,
     updateMeetingNotes,
     getCardListFromCommand,
     updateTrello
