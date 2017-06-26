@@ -5,11 +5,11 @@ const trelloToken = process.env.TRELLO_TOKEN; // eslint-disable-line no-undef
 const trello = new Trello(trelloKey, trelloToken);
 const {rtm} = require('./bot');
 
-let meetingNotesMaster = [];
+const meetingNotesMaster = [];
 
 function noteToString(note) {
     let text = note.text;
-    if (text.substring(0, 1) == ' ') {
+    if (text.substring(0, 1) === ' ') {
         text = text.substring(1);
     }
     return `- ${text} (added by ${note.user})`;
@@ -17,17 +17,18 @@ function noteToString(note) {
 
 function getMeetingNotes(boardTitle, listTitle, cardTitle) {
     return new Promise((resolve, reject) => {
-        trello.get('/1/members/me/boards', (err, data) => {
-            if (err) reject(err);
-            const board = data.find(board => board.name === boardTitle);
-            trello.get('/1/boards/' + board.id + '/lists', (err, data) => {
-                if (err) reject(err);
-                const list = data.find(list => {
-                    return list.name === listTitle;
-                });
-                trello.get('/1/lists/' + list.id + '/cards', (err, data) => {
-                    if (err) reject(err);
-                    const card = data.find(card => card.name === cardTitle);
+        trello.get('/1/members/me/boards', (err1, boards) => {
+            if (err1) reject(err1);
+
+            const board = boards.find(b => b.name === boardTitle);
+            trello.get('/1/boards/' + board.id + '/lists', (err2, lists) => {
+                if (err2) reject(err2);
+
+                const list = lists.find(l => l.name === listTitle);
+                trello.get('/1/lists/' + list.id + '/cards', (err3, cards) => {
+                    if (err3) reject(err3);
+
+                    const card = cards.find(c => c.name === cardTitle);
                     resolve(card);
                 });
             });
@@ -45,6 +46,30 @@ function parseMeetingNoteItems(desc, title) {
     const sectionRegex = new RegExp(title + '\n(-){3,}\n(- .*(\n)?)*', 'g');
     const section = desc.match(sectionRegex) || [''];
     return section[0].match(/- .*/g) || [];
+}
+
+function updateTrello(messageChannel, cardList, cardTitle, content) {
+    let cardBoard;
+    if (cardList === 'Blog Article Ideas') {
+        cardBoard = 'Code Hangar Blog';
+    } else {
+        cardBoard = 'Code Hangar General';
+    }
+
+    const responseText = `I'll add that to the ${cardTitle} card in the ${cardList} list.`;
+    rtm.sendMessage(responseText, messageChannel);
+
+    simplyTrello.send({
+        key: trelloKey,
+        token: trelloToken
+    }, {
+        path: {
+            board: cardBoard,
+            list: cardList,
+            card: cardTitle
+        },
+        content: content
+    });
 }
 
 function addMeetingNote(boardTitle, listTitle, cardTitle, meetingNote) {
@@ -80,27 +105,6 @@ ${custHeadline.join('\n')}
     });
 }
 
-function updateMeetingNotes(command, messageText, messageChannel, messageUser) {
-    const boardTitle = 'Code Hangar General';
-    const cardTitle = 'Meeting Notes';
-    const listTitle = getCardListFromCommand(command);
-    if (command == 'print meeting notes:') {
-        printMeetingNotes(messageChannel, boardTitle, listTitle, cardTitle);
-    } else {
-        rtm.sendMessage('I\'ll add that to the notes!', messageChannel);
-        const writeText = messageText.split(':')[1];
-        const meetingNote = {
-            tag: command,
-            text: writeText,
-            user: messageUser,
-            channel: messageChannel
-        };
-        meetingNotesMaster.push(meetingNote);
-        addMeetingNote(boardTitle, listTitle, cardTitle, meetingNote);
-    }
-    // const writeMessage = messageText.split(command)[1];
-}  
-
 function getCardListFromCommand(command) {
     const listDict = {
         'print meeting notes:': 'This Week',
@@ -115,31 +119,26 @@ function getCardListFromCommand(command) {
     return listDict[command];
 }
 
-function updateTrello(messageChannel, cardList, cardTitle, content) {
-
-    let cardBoard;
-    if (cardList == 'Blog Article Ideas') {
-        cardBoard = 'Code Hangar Blog';
+function updateMeetingNotes(command, messageText, messageChannel, messageUser) {
+    const boardTitle = 'Code Hangar General';
+    const cardTitle = 'Meeting Notes';
+    const listTitle = getCardListFromCommand(command);
+    if (command === 'print meeting notes:') {
+        printMeetingNotes(messageChannel, boardTitle, listTitle, cardTitle);
     } else {
-        cardBoard = 'Code Hangar General';
+        rtm.sendMessage('I\'ll add that to the notes!', messageChannel);
+        const writeText = messageText.split(':')[1];
+        const meetingNote = {
+            tag: command,
+            text: writeText,
+            user: messageUser,
+            channel: messageChannel
+        };
+        meetingNotesMaster.push(meetingNote);
+        addMeetingNote(boardTitle, listTitle, cardTitle, meetingNote);
     }
-
-    const responseText = `I'll add that to the ${cardTitle} card in the ${cardList} list.`;
-    rtm.sendMessage(responseText, messageChannel);
-  
-    simplyTrello.send({
-        key: trelloKey,
-        token: trelloToken
-    }, {
-        path: {
-            board: cardBoard,
-            list: cardList,
-            card: cardTitle
-        },
-        content: content
-    });
+    // const writeMessage = messageText.split(command)[1];
 }
-
 module.exports = {
     updateMeetingNotes,
     getCardListFromCommand,

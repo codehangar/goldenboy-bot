@@ -13,12 +13,12 @@ function updateIMs(data) {
 }
 
 function getIMfromUID(uid) {
-    const im = ims.find(im => im.user === uid);
+    const im = ims.find(i => i.user === uid);
     return im ? im.id : 'unknown IM channel';
 }
 
 function getChannelFromId(id) {
-    const channel = channels.find(channel => channel.id === id);
+    const channel = channels.find(c => c.id === id);
     return channel ? channel.name : 'unknown channel';
 }
 

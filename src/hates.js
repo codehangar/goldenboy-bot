@@ -1,7 +1,7 @@
 const {rtm} = require('./bot');
 
 const hates = ['microsoft', 'microsofts', 'microsoft\'s', 'hitler', 'hitlers', 'hitler\'s', 'nazi', 'nazis', 'nazi\'s', 'aaron blankenship', 'sexism', 'sexism\'s', 'sexist', 'sexists', 'sexist\'s'];
-const hateResponses =  {
+const hateResponses = {
     'aaron blankenship': [
         'Aaron Blankenship deserves a lifetime of fear and pain as far as I\'m concerned! Wow! :smiley: :joy:',
         'Fantasies of Aaron Blankenship\'s violent death bring me great comfort and joy in my daily life as a bot! Let\'s make it happen! :knife: :skull:',
@@ -36,16 +36,15 @@ const hateResponses =  {
 
 };
 
-
-function expressHatred(hate, message){
-    const resArray = hateResponses[hate];
-    rtm.sendMessage(resArray[getRandomInt(0, resArray.length)], message.channel);
+function getRandomInt(min, max) {
+    const minInt = Math.ceil(min);
+    const maxInt = Math.floor(max);
+    return Math.floor(Math.random() * (maxInt - minInt)) + minInt;
 }
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min;
+function expressHatred(hate, message) {
+    const resArray = hateResponses[hate];
+    rtm.sendMessage(resArray[getRandomInt(0, resArray.length)], message.channel);
 }
 
 module.exports = {hates, expressHatred};

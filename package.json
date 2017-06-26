@@ -6,7 +6,9 @@
   "scripts": {
     "start": "NODE_ENV=development node goldenboy",
     "dev": "NODE_ENV=development nodemon goldenboy",
-    "test": "echo All Tests are passing!"
+    "test": "eslint . && mocha",
+    "eslint": "eslint .",
+    "test-coverage": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec"
   },
   "repository": {
     "type": "git",
@@ -36,5 +38,14 @@
     "rethinkdb": "^2.3.3",
     "simply-trello": "0.0.9",
     "toggl-api": "^1.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "chai-as-promised": "^7.0.0",
+    "eslint": "^4.1.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.4.2",
+    "mockery": "^2.0.0",
+    "sinon": "^2.3.5"
   }
 }

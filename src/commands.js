@@ -1,4 +1,4 @@
-const {integrationsValid} = require('./integrations');
+const integrations = require('./integrations');
 
 const trelloCommands = ['idea:', 'blog post:', 'ch todo:'];
 const togglCommands = ['toggl:'];
@@ -12,13 +12,13 @@ const mimicCommands = ['mimic:'];
 
 let allCommands = funCommands.concat(swearCommands).concat(statusCommands).concat(helpCommands).concat(mimicCommands);
 
-if (integrationsValid.trello) {
+if (integrations.trello) {
     allCommands = allCommands.concat(noteCommands).concat(trelloCommands);
 }
-if (integrationsValid.toggl) {
+if (integrations.toggl) {
     allCommands = allCommands.concat(togglCommands);
 }
-if (integrationsValid.github){
+if (integrations.github) {
     allCommands = allCommands.concat(githubCommands);
 }
 

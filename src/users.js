@@ -1,14 +1,18 @@
-const {allIntegrationsValid} = require('./integrations');
-if (allIntegrationsValid){ 
-    var {createRethinkUsers, getSwearUsers} = require('./rethinkdb_gb');
-} 
+const integrations = require('./integrations');
+
+let createRethinkUsers;
+let getSwearUsers;
+if (integrations.rethinkdb) {
+    createRethinkUsers = require('./rethinkdb_gb').createRethinkUsers;
+    getSwearUsers = require('./rethinkdb_gb').getSwearUsers;
+}
 
 let users = [];
-let swearJar = [];
+const swearJar = [];
 
 function updateUsers(data) {
     users = data.members;
-    if(allIntegrationsValid){
+    if (integrations.rethinkdb) {
         createRethinkUsers(users.map(member => {
             return {
                 id: member.id,
@@ -23,18 +27,18 @@ function updateUsers(data) {
     }
 }
 
+function getUsernameFromId(id) {
+    const user = users.find(u => u.id === id);
+    return user ? user.name : 'unknown member';
+}
+
 function updateSwearJar(id, swearCount) {
     swearJar[getUsernameFromId(id)] += swearCount;
 }
 
 function getIdFromUsername(username) {
-    const user = users.find(user => user.username === username);
+    const user = users.find(u => u.username === username);
     return user ? user.id : '0';
-}
-
-function getUsernameFromId(id) {
-    const user = users.find(user => user.id === id);
-    return user ? user.name : 'unknown member';
 }
 
 function listUsers() {
@@ -46,19 +50,19 @@ function getSwearJarUser(username) {
 }
 
 function getSwearJar() {
-    if(allIntegrationsValid){
+    if (integrations.rethinkdb) {
         return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
-            getSwearUsers().then((users) => {
-                const longestName = users.reduce((agg, user) => agg > user.username.length ? agg : user.username.length, 0);
-                resolve(users.map((user, i) => {
+            getSwearUsers().then((dbUsers) => {
+                const longestName = dbUsers.reduce((agg, user) => agg > user.username.length ? agg : user.username.length, 0);
+                resolve(dbUsers.map((user, i) => {
                     const padding = new Array((longestName - user.username.length) + 1).join(' ');
                     return `${i + 1}. ${user.username + padding} with ${user.swear_count} swears`;
                 }));
             });
         });
-    } else {
-        return swearJar;
     }
+
+    return swearJar;
 }
 
 
@@ -66,7 +70,7 @@ module.exports = {
     listUsers,
     updateUsers,
     getUsernameFromId,
-    getSwearJar, 
+    getSwearJar,
     updateSwearJar,
     getSwearJarUser,
     getIdFromUsername
