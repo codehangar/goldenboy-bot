@@ -1,6 +1,9 @@
 {
   "name": "goldenboy-bot",
   "version": "1.0.0",
+  "engines": {
+    "node": "6.10.3"
+  },
   "description": "Code Hangar's goldenboy",
   "main": "goldenboy.js",
   "scripts": {
