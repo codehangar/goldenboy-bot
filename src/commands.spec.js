@@ -7,6 +7,11 @@ describe('commands', () => {
         });
     });
 
+    afterEach(() => {
+        mockery.deregisterAll();
+        mockery.resetCache();
+    });
+
     describe('with integrations enabled', () => {
         beforeEach(() => {
             mockery.registerMock('./integrations', {

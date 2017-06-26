@@ -19,7 +19,7 @@ describe('trello', () => {
             const expected = [
                 '- good news item 1',
                 '- good news item 2',
-                '- good news item 3',
+                '- good news item 3'
             ];
             expect(actual).to.deep.equal(expected);
         });
@@ -30,7 +30,7 @@ describe('trello', () => {
             const expected = [
                 '- employee headline item 1',
                 '- employee headline item 2',
-                '- employee headline item 3',
+                '- employee headline item 3'
             ];
             expect(actual).to.deep.equal(expected);
         });
