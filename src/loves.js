@@ -1,6 +1,6 @@
 const {rtm} = require('./bot');
 
-const loves = ['father', 'fathers', 'father\'s', 'cookie', 'cookies', 'cookie\'s', 'communism', 'la croix'];
+const loves = ['father', 'fathers', 'father\'s', 'cookie', 'cookies', 'cookie\'s', 'communism', 'la croix', '4th of july', 'july 4th'];
 
 const loveResponses = {
     'father': [
@@ -26,7 +26,17 @@ const loveResponses = {
     'la croix': [
         'I drink 12 La Croixs every 5 minutes! Send help!',
         'LAAAAAAAAAAAAAAAAAAAA CROIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. La Croix. l.A.croaixoiaii'
-    ]
+    ],
+	
+	'4th of july': [
+		':us: :us: :us: USA! USA! USA! :us: :us: :us:',
+		':fireworks: :us: :fireworks: :us: :fireworks:'
+	],
+	
+	'july 4th': [
+		':us: :us: :us: USA! USA! USA! :us: :us: :us:',
+		':fireworks: :us: :fireworks: :us: :fireworks:'
+	]
 };
 
 function getRandomInt(min, max) {
