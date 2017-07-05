@@ -27,16 +27,16 @@ const loveResponses = {
         'I drink 12 La Croixs every 5 minutes! Send help!',
         'LAAAAAAAAAAAAAAAAAAAA CROIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX. La Croix. l.A.croaixoiaii'
     ],
-	
-	'4th of july': [
-		':us: :us: :us: USA! USA! USA! :us: :us: :us:',
-		':fireworks: :us: :fireworks: :us: :fireworks:'
-	],
-	
-	'july 4th': [
-		':us: :us: :us: USA! USA! USA! :us: :us: :us:',
-		':fireworks: :us: :fireworks: :us: :fireworks:'
-	]
+
+    '4th of july': [
+        ':us: :us: :us: USA! USA! USA! :us: :us: :us:',
+        ':fireworks: :us: :fireworks: :us: :fireworks:'
+    ],
+
+    'july 4th': [
+        ':us: :us: :us: USA! USA! USA! :us: :us: :us:',
+        ':fireworks: :us: :fireworks: :us: :fireworks:'
+    ]
 };
 
 function getRandomInt(min, max) {
