@@ -1,0 +1,4 @@
+test
+./src/**/*.spec.js
+-R spec
+-u bdd

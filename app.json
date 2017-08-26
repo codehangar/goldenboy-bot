@@ -17,25 +17,32 @@
       "description": "A secret key used by Slack to authenticate the slack bot"
     },
     "TRELLO_KEY": {
-      "description": "API Key for Trello Integration"
+      "description": "API Key for Trello Integration",
+      "required": false
     },
     "TRELLO_TOKEN": {
-      "description": "API Token for Trello Integration"
+      "description": "API Token for Trello Integration",
+      "required": false
     },
     "TOGGL_TOKEN": {
-      "description": "API Token for Toggl Integration"
+      "description": "API Token for Toggl Integration",
+      "required": false
     },
     "TOGGL_USER_AGENT": {
-      "description": "API User for Toggl Integration (your account's email)"
+      "description": "API User for Toggl Integration (your account's email)",
+      "required": false
     },
     "TOGGL_WORKSPACE": {
-      "description": "Toggl Workspace ID"
+      "description": "Toggl Workspace ID",
+      "required": false
     },
     "RETHINK_HOST": {
-      "description": "Hostname or IP of your RethinkDB instance"
+      "description": "Hostname or IP of your RethinkDB instance",
+      "required": false
     },
     "RETHINK_PORT": {
-      "description": "Port of your RethinkDB instance"
+      "description": "Port of your RethinkDB instance",
+      "required": false
     }
   }
 }

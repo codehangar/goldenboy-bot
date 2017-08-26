@@ -2,6 +2,8 @@ const r = require('rethinkdb');
 const connectionInfo = {
     host: process.env.RETHINK_HOST, // eslint-disable-line no-undef
     port: process.env.RETHINK_PORT, // eslint-disable-line no-undef
+    user: process.env.RETHINK_USER,
+    password: process.env.RETHINK_PASS,
     db: 'goldenboy_db'
 };
 const usersTable = 'users';
@@ -27,8 +29,8 @@ function createUsersTable(conn) {
 
 function initConnection() {
     return new Promise((resolve, reject) => {
-        r.connect(connectionInfo).then(function(conn) {
-            conn.on('close', function() {
+        r.connect(connectionInfo).then(conn => {
+            conn.on('close', () => {
                 console.warn('------------------------------------------------------'); // eslint-disable-line no-console
                 console.warn('*********** closed a database connection *************'); // eslint-disable-line no-console
                 console.warn('------------------------------------------------------'); // eslint-disable-line no-console
@@ -36,7 +38,7 @@ function initConnection() {
             createUsersTable(conn).then(() => {
                 resolve(conn);
             });
-        }).catch(function(err) {
+        }).catch(err => {
             reject(err);
         });
     });
@@ -45,10 +47,9 @@ function initConnection() {
 function getConnection() {
     if (connection) {
         return connection;
-    } else {
-        connection = initConnection();
-        return connection;
     }
+    connection = initConnection();
+    return connection;
 }
 
 function createRethinkUsers(users) {
@@ -66,13 +67,13 @@ function createRethinkUsers(users) {
     });
 }
 
-function incrementUserSwearCount(userId, added_swears) {
+function incrementUserSwearCount(userId, addedSwears) {
     return new Promise((resolve, reject) => { // eslint-disable-line no-unused-vars
         getConnection().then(conn => {
             r.table(usersTable)
                 .get(userId)
                 .update({
-                    swear_count: r.row('swear_count').add(added_swears)
+                    swear_count: r.row('swear_count').add(addedSwears)
                 })
                 .run(conn)
                 .then(resolve);
