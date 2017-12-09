@@ -33,9 +33,7 @@ function getToday(){
 }
 
 function thereIsParkingToday(){
-  parkingDates = getParkingDates();
-  today = getToday();
-  return parkingDates.includes(today)
+  return getParkingDates().includes(getToday())
 }
 
 module.exports = {
