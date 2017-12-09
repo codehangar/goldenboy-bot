@@ -20,7 +20,7 @@ function getParkingDates() {
 function getToday() {
     const today = new Date(); 
     const dd = today.getDate();
-    const mm = today.getMonth() + 1; //January is 0!
+    const mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
     if(dd<10){
         dd = '0'+ dd;
@@ -28,8 +28,8 @@ function getToday() {
     if(mm<10){
         mm = '0'+ mm;
     } 
-    const today_string = yyyy + '-' + mm + '-' + dd;
-    return today_string;
+    const todayString = yyyy + '-' + mm + '-' + dd;
+    return todayString;
   }
 
 function thereIsParkingToday() {
