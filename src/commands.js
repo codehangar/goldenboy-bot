@@ -33,5 +33,6 @@ module.exports = {
     allCommands,
     swearCommands,
     githubCommands,
-    mimicCommands
+    mimicCommands,
+    parkingCommands
 };
