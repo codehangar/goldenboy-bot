@@ -2,7 +2,7 @@
 const https = require('https');
 const url = 'https://cfo-event-parking.herokuapp.com/events';
 
-function getParkingDates(){
+function getParkingDates() {
   https.get(url, res => {
     res.setEncoding('utf8');
     let body = '';
@@ -12,12 +12,12 @@ function getParkingDates(){
     res.on('end', () => {
       body = JSON.parse(body);
       console.log('body', body); // eslint-disable-line no-console
-      return body
+      return body;
     });
   });
 }
 
-function getToday(){
+function getToday() {
   const today = new Date(); 
   const dd = today.getDate();
   const mm = today.getMonth() + 1; //January is 0!
@@ -29,10 +29,10 @@ function getToday(){
     mm = '0'+ mm;
   } 
   const today_string = yyyy + '-' + mm + '-' + dd;
-  return today_string
+  return today_string;
 }
 
-function thereIsParkingToday(){
+function thereIsParkingToday() {
   return getParkingDates().includes(getToday())
 }
 
