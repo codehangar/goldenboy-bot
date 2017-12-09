@@ -45,7 +45,7 @@ if (integrations.rethinkdb) {
 
 const {rtm, web, RTM_EVENTS} = require('./src/bot');
 const server = require('./web/server-web');
-const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands, mimicCommands, parkingCommnds} = require('./src/commands');
+const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands, funCommands, allCommands, swearCommands, githubCommands, mimicCommands, parkingCommands} = require('./src/commands');
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId, updateSwearJar} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
@@ -218,7 +218,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
                         if (parkingCommands.indexOf(command) > -1) {
                             console.log('executing parking command'); // eslint-disable-line no-console
                             console.log(command); // eslint-disable-line no-console
-                        } 
+                        }
                     }
                 });
             }
