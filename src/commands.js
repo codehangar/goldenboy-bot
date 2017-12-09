@@ -9,8 +9,9 @@ const funCommands = ['kill:', 'punish:', 'reward:'];
 const swearCommands = ['swearjar:']; // to be expanded ?
 const githubCommands = ['issue:'];
 const mimicCommands = ['mimic:'];
+const parkingCommands = ['parking:', 'parking this month:'];
 
-let allCommands = funCommands.concat(swearCommands).concat(statusCommands).concat(helpCommands).concat(mimicCommands);
+let allCommands = funCommands.concat(swearCommands).concat(statusCommands).concat(helpCommands).concat(mimicCommands).concat(parkingCommands);
 
 if (integrations.trello) {
     allCommands = allCommands.concat(noteCommands).concat(trelloCommands);
