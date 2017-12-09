@@ -28,8 +28,8 @@ function getToday(){
   if(mm<10){
     mm = '0'+mm;
   } 
-  const today = yyyy + '-' + mm + '-' + dd;
-  return today
+  const today_string = yyyy + '-' + mm + '-' + dd;
+  return today_string
 }
 
 function thereIsParkingToday(){
