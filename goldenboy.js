@@ -216,7 +216,8 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
                             checkSwears(command, message);
                         }
                         if (parkingCommands.indexOf(command) > -1) {
-                            console.log('executing parking command'); // esling-disable-line no-console
+                            console.log('executing parking command'); // eslint-disable-line no-console
+                            console.log(command); // eslint-disable-line no-console
                         } 
                     }
                 });
