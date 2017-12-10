@@ -49,7 +49,7 @@ function thereIsParkingToday() {
             console.log('parkingDates', body); // eslint-disable-line no-console
             today = getToday();
             console.log('today', today); // eslint-disable-line no-console
-            if body.contains(today) {
+            if(body.contains(today)) {
                 rtm.sendMessage('parking...today...yes...', message.channel);
             } else {
                 rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
