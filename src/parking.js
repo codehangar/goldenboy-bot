@@ -3,6 +3,22 @@ const https = require('https');
 const {rtm} = require('./bot');
 const url = 'https://cfo-event-parking.herokuapp.com/events';
 
+
+function getToday() {
+    const today = new Date();
+    const dd = today.getDate();
+    const mm = today.getMonth() + 1;
+    const yyyy = today.getFullYear();
+    if(dd < 10) {
+        dd = '0' + dd;
+    }
+    if(mm < 10) {
+        mm = '0' + mm;
+    }
+    const todayString = yyyy + '-' + mm + '-' + dd;
+    return todayString;
+}
+
 function getParkingDates(message) {
     const today = getToday();
     https.get(url, res => {
@@ -19,7 +35,7 @@ function getParkingDates(message) {
             for(let i = 0; i < body.length; i++) {
                 console.log('i', i);
                 console.log('body[i]', body[i]);
-                datesForMessage = datesForMessage + body[i] + ', '
+                datesForMessage = datesForMessage + body[i] + ', ';
             }
             rtm.sendMessage('Here are the dates!: ' + datesForMessage, message.channel);
             return;
@@ -27,20 +43,6 @@ function getParkingDates(message) {
     });
 }
 
-function getToday() {
-    const today = new Date();
-    const dd = today.getDate();
-    const mm = today.getMonth() + 1;
-    const yyyy = today.getFullYear();
-    if(dd < 10) {
-        dd = '0' + dd;
-    }
-    if(mm < 10) {
-        mm = '0' + mm;
-    }
-    const todayString = yyyy + '-' + mm + '-' + dd;
-    return todayString;
-}
 
 function thereIsParkingToday(message) {
     https.get(url, res => {
