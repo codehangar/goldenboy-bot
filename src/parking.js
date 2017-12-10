@@ -35,9 +35,9 @@ function getParkingDates(message) {
             for(let i = 0; i < body.length; i++) {
                 console.log('i', i);
                 console.log('body[i]', body[i]);
-                datesForMessage = datesForMessage + body[i] + ', ';
+                datesForMessage = datesForMessage + body[i] + '\n ';
             }
-            rtm.sendMessage('Here are the dates!: ' + datesForMessage, message.channel);
+            rtm.sendMessage('Here are the dates!:\n' + datesForMessage, message.channel);
             return;
         });
     });
@@ -53,17 +53,19 @@ function thereIsParkingToday(message) {
         });
         res.on('end', () => {
             body = JSON.parse(body);
-            console.log('body', body); // eslint-disable-line no-console
-            console.log('typeof body', typeof body); // eslint-disable-line no-console
-            console.log('parkingDates', body); // eslint-disable-line no-console
+            let datesForMessage = '';
+            for(let i = 0; i < body.length; i++) {
+                console.log('i', i);
+                console.log('body[i]', body[i]);
+                datesForMessage = datesForMessage + body[i] + '\n ';
+            }
             const today = getToday();
             console.log('today', today); // eslint-disable-line no-console
-            if(body.contains(today)) {
+            if(datesForMessage.indexOf(today)) {
                 rtm.sendMessage('parking...today...yes...', message.channel);
             } else {
                 rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
             }
-            //rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
             return;
         });
     });
