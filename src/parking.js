@@ -14,7 +14,10 @@ function getParkingDates(message) {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
-            rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
+            for(var i in body) {
+                console.log(i)
+            }
+            // rtm.sendMessage('Here are the dates: ' + body.stringify(), message.channel);
             return;
         });
     });
