@@ -3,7 +3,7 @@ const https = require('https');
 const {rtm} = require('./bot');
 const url = 'https://cfo-event-parking.herokuapp.com/events';
 
-function getParkingDates() {
+function getParkingDates(message) {
     https.get(url, res => {
         res.setEncoding('utf8');
         let body = '';
@@ -14,7 +14,8 @@ function getParkingDates() {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
-            return body;
+            rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
+            return ;
         });
     });
 }
@@ -35,23 +36,37 @@ function getToday() {
 }
 
 function thereIsParkingToday() {
-    return getParkingDates().includes(getToday());
+    https.get(url, res => {
+        res.setEncoding('utf8');
+        let body = '';
+        res.on('data', data => {
+            body += data;
+        });
+        res.on('end', () => {
+            body = JSON.parse(body);
+            console.log('body', body); // eslint-disable-line no-console
+            console.log('typeof body', typeof body); // eslint-disable-line no-console
+            console.log('parkingDates', body); // eslint-disable-line no-console
+            today = getToday();
+            console.log('today', today); // eslint-disable-line no-console
+            if body.contains(today) {
+                rtm.sendMessage('parking...today...yes...', message.channel);
+            } else {
+                rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
+            }
+            //rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
+            return ;
+        });
+    });
 }
 
 function checkParking(command, message) {
     switch(command) {
         case 'parking:':
-            if(thereIsParkingToday()) {
-                rtm.sendMessage('parking...today...yes...', message.channel);
-                break;
-            } else {
-                rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
-                break;
-            }
+            thereIsParkingToday(message)
+            break;
         case 'parking this month:':
-            const parkingDates = getParkingDates();
-            console.log('parkingDates', parkingDates); // eslint-disable-line no-console
-            rtm.sendMessage('Here are the dates: ' + getParkingDates().toString(), message.channel);
+            getParkingDates(message);
             break;
         default:
             return;
