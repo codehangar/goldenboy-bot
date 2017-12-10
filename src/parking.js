@@ -14,8 +14,9 @@ function getParkingDates(message) {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
-            for(var i in body) {
-                console.log(i)
+            for(let i = 0; i<arr.length; i++) {
+                console.log('i', i);
+                console.log('body[i]', body[i]);
             }
             // rtm.sendMessage('Here are the dates: ' + body.stringify(), message.channel);
             return;
