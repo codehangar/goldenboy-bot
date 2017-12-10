@@ -1,5 +1,6 @@
 // No third party module required: https is part of the Node.js API
 const https = require('https');
+const {rtm} = require('./bot');
 const url = 'https://cfo-event-parking.herokuapp.com/events';
 
 function getParkingDates() {
@@ -36,6 +37,20 @@ function thereIsParkingToday() {
     return getParkingDates().includes(getToday());
 }
 
+function checkParking(command, message) {
+    switch(command) {
+        case 'parking today:':
+            if(thereIsParkingToday()) {
+                rtm.sendMessage("parking...today...yes...", message.channel);
+            }
+            else {
+                rtm.sendMessage("no PARKING. NO PARKING NO PARKING NO PARKING", message.channel);
+            }
+        case 'parking this month:':
+            rtm.sendMessage("Here are the dates: " + getParkingDates(), message.channel);
+    }
+}
+
 module.exports = {
-    getParkingDates, getToday, thereIsParkingToday
+    getParkingDates, getToday, thereIsParkingToday, checkParking
 };

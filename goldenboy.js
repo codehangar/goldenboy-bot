@@ -49,6 +49,7 @@ const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId, updateSwearJar} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
+const {getParkingDates, getToday, thereIsParkingToday, checkParking} = require('./src/parking')
 
 // TODO: Replace when mimic file exists
 // const {mimicUser} = require('./src/mimic');
@@ -217,7 +218,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
                         }
                         if (parkingCommands.indexOf(command) > -1) {
                             console.log('executing parking command'); // eslint-disable-line no-console
-                            console.log(command); // eslint-disable-line no-console
+                            checkParking(command, message); // eslint-disable-line no-console
                         }
                     }
                 });
