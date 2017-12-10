@@ -31,5 +31,5 @@ function mimicUser(channelId, messageText) {
         }
     });
 }
- 
+
 module.exports = {mimicUser};
