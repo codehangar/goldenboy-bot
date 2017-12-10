@@ -15,7 +15,7 @@ function getParkingDates(message) {
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
             rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
-            return ;
+            return;
         });
     });
 }
@@ -35,7 +35,7 @@ function getToday() {
     return todayString;
 }
 
-function thereIsParkingToday() {
+function thereIsParkingToday(message) {
     https.get(url, res => {
         res.setEncoding('utf8');
         let body = '';
@@ -47,7 +47,7 @@ function thereIsParkingToday() {
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
             console.log('parkingDates', body); // eslint-disable-line no-console
-            today = getToday();
+            const today = getToday();
             console.log('today', today); // eslint-disable-line no-console
             if(body.contains(today)) {
                 rtm.sendMessage('parking...today...yes...', message.channel);
@@ -55,7 +55,7 @@ function thereIsParkingToday() {
                 rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
             }
             //rtm.sendMessage('Here are the dates: ' + body.toString(), message.channel);
-            return ;
+            return;
         });
     });
 }
@@ -63,7 +63,7 @@ function thereIsParkingToday() {
 function checkParking(command, message) {
     switch(command) {
         case 'parking:':
-            thereIsParkingToday(message)
+            thereIsParkingToday(message);
             break;
         case 'parking this month:':
             getParkingDates(message);
