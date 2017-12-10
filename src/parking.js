@@ -13,6 +13,7 @@ function getParkingDates() {
         res.on('end', () => {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
+            console.log('typeof body', typeof body); // eslint-disable-line no-console
             return body;
         });
     });
@@ -48,6 +49,8 @@ function checkParking(command, message) {
                 break;
             }
         case 'parking this month:':
+            const parkingDates = getParkingDates();
+            console.log('parkingDates', parkingDates); // eslint-disable-line no-console
             rtm.sendMessage('Here are the dates: ' + getParkingDates().toString(), message.channel);
             break;
         default:
