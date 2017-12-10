@@ -2,11 +2,11 @@ const {rtm, web} = require('./bot');
 const MarkovChain = require('markovchain');
 const {listUsers} = require('./users');
 
-function mimicUser(channelId, messageText){
-    console.log('channelId', channelId); // eslint-disable-line no-console 
+function mimicUser(channelId, messageText) {
+    console.log('channelId', channelId); // eslint-disable-line no-console
     const messageRest = messageText.split(':')[1];
-    const user = listUsers().find(user => messageRest.indexOf(user.name) > -1);
-    const userId = user.id;
+    const thisUser = listUsers().find(user => messageRest.indexOf(user.name) > -1);
+    const userId = thisUser.id;
     console.log('userId', userId); // eslint-disable-line no-console
     if (userId === 0) {
 	    return;
@@ -27,7 +27,7 @@ function mimicUser(channelId, messageText){
 	    console.log(startWord); // eslint-disable-line no-console
 	    console.log(quoteLength); // eslint-disable-line no-console
             console.log(quotes.start(startWord).end(quoteLength).process()); // eslint-disable-line no-console
-	    rtm.sendMessage('Look at me! I am ' + user.name + '! - \"' + quotes.start(startWord).end(quoteLength).process() + '\"', channelId);
+	    rtm.sendMessage('Look at me! I am ' + thisUser.name + '! - \"' + quotes.start(startWord).end(quoteLength).process() + '\"', channelId);
         }
     });
 }
