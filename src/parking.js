@@ -61,7 +61,7 @@ function thereIsParkingToday(message) {
             }
             const today = getToday();
             console.log('today', today); // eslint-disable-line no-console
-            if(datesForMessage.indexOf(today)) {
+            if(datesForMessage.indexOf(today) > -1) {
                 console.log('index:', datesForMessage.indexOf(today)); // eslint-disable-line no-console
                 console.log('dates[index]', datesForMessage[datesForMessage.indexOf(today)]); // eslint-disable-line no-console
                 rtm.sendMessage('event parking...today...yes...', message.channel);
