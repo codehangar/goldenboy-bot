@@ -52,7 +52,7 @@ const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./s
 
 // TODO: Replace when mimic file exists
 // const {mimicUser} = require('./src/mimic');
-
+const {getParkingDates, getToday, thereIsParkingToday, checkParking} = require('./src/parking');
 const {hates, expressHatred} = require('./src/hates');
 const {loves, expressLove} = require('./src/loves');
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');
@@ -217,6 +217,7 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
                         }
                         if (parkingCommands.indexOf(command) > -1) {
                             console.log('executing parking command'); // eslint-disable-line no-console
+                            checkParking(command);
                         }
                     }
                 });
