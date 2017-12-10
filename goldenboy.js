@@ -49,7 +49,7 @@ const {trelloCommands, togglCommands, noteCommands, helpCommands, statusCommands
 const {funPrewords, statusPrewords, allPrewords} = require('./src/prewords');
 const {updateUsers, getUsernameFromId, updateSwearJar} = require('./src/users');
 const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./src/channels');
-const {getParkingDates, getToday, thereIsParkingToday, checkParking} = require('./src/parking')
+const {getParkingDates, getToday, thereIsParkingToday, checkParking} = require('./src/parking');
 
 // TODO: Replace when mimic file exists
 // const {mimicUser} = require('./src/mimic');

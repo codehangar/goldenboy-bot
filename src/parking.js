@@ -42,8 +42,7 @@ function checkParking(command, message) {
         case 'parking today:':
             if(thereIsParkingToday()) {
                 rtm.sendMessage('parking...today...yes...', message.channel);
-            }
-            else {
+            } else {
                 rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
             }
             break;
@@ -51,7 +50,8 @@ function checkParking(command, message) {
             rtm.sendMessage('Here are the dates: ' + getParkingDates(), message.channel);
             break;
         default:
-            return {};
+            return;
+    return;
     }
 }
 
