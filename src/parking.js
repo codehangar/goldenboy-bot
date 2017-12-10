@@ -62,9 +62,11 @@ function thereIsParkingToday(message) {
             const today = getToday();
             console.log('today', today); // eslint-disable-line no-console
             if(datesForMessage.indexOf(today)) {
-                rtm.sendMessage('parking...today...yes...', message.channel);
+                console.log('index:', datesForMessage.indexOf(today)) // eslint-disable-line no-console
+                console.log('dates[index]', datesForMessage[datesForMessage.indexOf(today)])
+                rtm.sendMessage('event parking...today...yes...', message.channel);
             } else {
-                rtm.sendMessage('no PARKING. NO PARKING NO PARKING NO PARKING', message.channel);
+                rtm.sendMessage('no evEnt PARKING. NO EVENT PARKING NO EVENT PARKING NO eVENT PARKING', message.channel);
             }
             return;
         });
