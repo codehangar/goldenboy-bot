@@ -4,6 +4,7 @@ const {rtm} = require('./bot');
 const url = 'https://cfo-event-parking.herokuapp.com/events';
 
 function getParkingDates(message) {
+    const today = getToday();
     https.get(url, res => {
         res.setEncoding('utf8');
         let body = '';
@@ -14,11 +15,13 @@ function getParkingDates(message) {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
+            let datesForMessage = '';
             for(let i = 0; i < body.length; i++) {
                 console.log('i', i);
                 console.log('body[i]', body[i]);
+                datesForMessage = datesForMessage + body[i] + ', '
             }
-            // rtm.sendMessage('Here are the dates: ' + body.stringify(), message.channel);
+            rtm.sendMessage('Here are the dates!: ' + datesForMessage, message.channel);
             return;
         });
     });
