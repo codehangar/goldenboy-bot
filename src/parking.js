@@ -14,7 +14,7 @@ function getParkingDates(message) {
             body = JSON.parse(body);
             console.log('body', body); // eslint-disable-line no-console
             console.log('typeof body', typeof body); // eslint-disable-line no-console
-            for(let i = 0; i<arr.length; i++) {
+            for(let i = 0; i < body.length; i++) {
                 console.log('i', i);
                 console.log('body[i]', body[i]);
             }
