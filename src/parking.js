@@ -39,7 +39,7 @@ function thereIsParkingToday() {
 
 function checkParking(command, message) {
     switch(command) {
-        case 'parking today:':
+        case 'parking:':
             if(thereIsParkingToday()) {
                 rtm.sendMessage('parking...today...yes...', message.channel);
                 break;
@@ -48,7 +48,7 @@ function checkParking(command, message) {
                 break;
             }
         case 'parking this month:':
-            rtm.sendMessage('Here are the dates: ' + getParkingDates(), message.channel);
+            rtm.sendMessage('Here are the dates: ' + getParkingDates().toString(), message.channel);
             break;
         default:
             return;
