@@ -52,7 +52,7 @@ const {updateChannels, getChannelFromId, updateIMs, getIMfromUID} = require('./s
 
 // TODO: Replace when mimic file exists
 // const {mimicUser} = require('./src/mimic');
-const {getParkingDates, getToday, thereIsParkingToday, checkParking} = require('./src/parking');
+const {checkParking} = require('./src/parking');
 const {hates, expressHatred} = require('./src/hates');
 const {loves, expressLove} = require('./src/loves');
 const {robotName, traits, changeStatus, haveFunPreword, checkSwears} = require('./src/gb-status');

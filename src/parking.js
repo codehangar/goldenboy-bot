@@ -29,15 +29,13 @@ function getParkingDates(message) {
         });
         res.on('end', () => {
             body = JSON.parse(body);
-            console.log('body', body); // eslint-disable-line no-console
-            console.log('typeof body', typeof body); // eslint-disable-line no-console
             let datesForMessage = '';
             for(let i = 0; i < body.length; i++) {
                 console.log('i', i);
                 console.log('body[i]', body[i]);
                 datesForMessage = datesForMessage + body[i] + '\n ';
             }
-            rtm.sendMessage('Here are the dates!:\n' + datesForMessage, message.channel);
+            rtm.sendMessage('Here are all the event parking dates I have!\n\n' + datesForMessage, message.channel);
             return;
         });
     });
@@ -55,15 +53,10 @@ function thereIsParkingToday(message) {
             body = JSON.parse(body);
             let datesForMessage = '';
             for(let i = 0; i < body.length; i++) {
-                console.log('i', i);
-                console.log('body[i]', body[i]);
                 datesForMessage = datesForMessage + body[i] + '\n ';
             }
             const today = getToday();
-            console.log('today', today); // eslint-disable-line no-console
             if(datesForMessage.indexOf(today) > -1) {
-                console.log('index:', datesForMessage.indexOf(today)); // eslint-disable-line no-console
-                console.log('dates[index]', datesForMessage[datesForMessage.indexOf(today)]); // eslint-disable-line no-console
                 rtm.sendMessage('event parking...today...yes...', message.channel);
             } else {
                 rtm.sendMessage('no evEnt PARKING. NO EVENT PARKING NO EVENT PARKING NO eVENT PARKING', message.channel);
@@ -87,5 +80,5 @@ function checkParking(command, message) {
 }
 
 module.exports = {
-    getParkingDates, getToday, thereIsParkingToday, checkParking
+    checkParking
 };
